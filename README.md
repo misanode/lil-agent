@@ -17,9 +17,25 @@
 <br />
 
 <p align="center">
-  <a href="https://github.com/misanode/lil-agent/releases"><img src=".github/assets/get-for-mac.svg" alt="Get for Mac — native macOS app" width="240" /></a>
+  <a href="https://github.com/misanode/lil-agent/releases/latest/download/Lil-Agent-Electron-macOS-arm64.zip"><img src=".github/assets/get-for-mac.svg" alt="Get for Mac — Electron app for Apple silicon" width="240" /></a>
   &nbsp;
-  <a href="https://github.com/misanode/lil-agent/releases"><img src=".github/assets/get-for-windows.svg" alt="Get for Windows — Electron app" width="288" /></a>
+  <a href="https://github.com/misanode/lil-agent/releases/latest/download/Lil-Agent-Windows-Setup.exe"><img src=".github/assets/get-for-windows.svg" alt="Get for Windows — Electron app" width="288" /></a>
+</p>
+
+<p align="center">
+  <sub>Electron for macOS and Windows. The Mac download supports Apple silicon.</sub>
+</p>
+
+<br />
+
+<p align="center">
+  <a href="https://github.com/misanode/lil-agent/releases/latest/download/Lil-Agent-Native-Swift-macOS.zip"><img src=".github/assets/get-native-swift-for-mac.svg" alt="Native Swift for Mac" width="330" /></a>
+</p>
+
+<p align="center">
+  Written entirely in Swift with AppKit and SceneKit.<br />
+  A smaller download for people who prefer native macOS frameworks.<br />
+  <sub>macOS 14+ · Apple silicon &amp; Intel · <a href="LilAgentMac/README.md">Native setup &amp; build guide</a></sub>
 </p>
 
 <br />
@@ -36,9 +52,13 @@ Pet, carry, throw, and resize your companion. Customize its moods, size, and sle
 
 Check [Releases](https://github.com/misanode/lil-agent/releases) for published installers. For local builds, follow your platform’s guide.
 
-**macOS** · `.dmg` installer · [Setup & build guide](LilAgentMac/README.md)
+The release downloads are ready to run—no Node.js, npm, Xcode, or terminal commands required. On Mac, unzip and move **Lil Agent.app** to **Applications**. On Windows, run the installer.
 
-**Windows** · `.exe` installer · [Setup & build guide](LilAgentWindows/README.md)
+**macOS · Electron** · `.zip` app · Apple silicon · macOS 13+ · [Setup & build guide](LilAgentWindows/README.md)
+
+**Windows · Electron** · `.exe` installer · x64 & ARM64 · [Setup & build guide](LilAgentWindows/README.md)
+
+**macOS · Native Swift** · `.zip` app · Apple silicon & Intel · macOS 14+ · [Setup & build guide](LilAgentMac/README.md)
 
 <br />
 
@@ -51,13 +71,13 @@ Check [Releases](https://github.com/misanode/lil-agent/releases) for published i
 
 <details>
   <summary>Which platforms does it run on?</summary>
-  <p>The native Mac app requires macOS 14 or later. The Windows edition uses Electron and Three.js. The platform guides cover setup, permissions, and platform-specific behavior.</p>
+  <p>The main macOS and Windows downloads use Electron and Three.js. The Electron Mac download supports Apple silicon and requires macOS 13 or later. The optional native Swift app supports Apple silicon and Intel Macs running macOS 14 or later.</p>
 </details>
 
 <details>
   <summary>What permissions does it need?</summary>
-  <p>On Mac, typing reactions require Input Monitoring, and music reactions may ask for permission to check Spotify or Music. Agent integrations are optional and use local hooks.</p>
-  <p>On Windows, optional typing reactions use a US keyboard layout and can display characters entered into password fields. Disable typing reactions when entering sensitive information.</p>
+  <p>On Mac, Electron typing reactions require Accessibility access; the native Swift app uses Input Monitoring. Music reactions may ask for permission to check Spotify or Music. Agent integrations are optional and use local hooks.</p>
+  <p>Electron typing reactions use a US keyboard layout and have no app-level password-field filter. On Windows, this can display characters entered into password fields. Disable typing reactions when entering sensitive information.</p>
 </details>
 
 <br />

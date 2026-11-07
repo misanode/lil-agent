@@ -1,8 +1,12 @@
-# Lil Agent for Mac
+# Lil Agent for Mac — Native Swift
 
 Lil Agent, the desktop pet that acts out what your AI coding agent is doing, as a native macOS app: Swift, AppKit
-and SceneKit, no Electron and no third-party code. Two characters: Clawd and Codex. The Windows edition is
-`../LilAgentWindows` (Electron + three.js), a file-for-file port of this one.
+and SceneKit, no Electron and no third-party code. Two characters: Clawd and Codex. The main macOS and Windows downloads use
+the Electron edition in `../LilAgentWindows`. This optional Swift edition offers native macOS frameworks and a smaller download.
+
+The native release requires macOS 14 or later and supports Apple silicon and Intel. Download `Lil-Agent-Native-Swift-macOS.zip`,
+extract it, and move **Lil Agent.app** to **Applications**. The locally prepared v1.0.0 archive is ad hoc signed and unnotarized;
+macOS may block its first launch. See [Apple's app-opening guidance](https://support.apple.com/en-us/102445).
 
 An unofficial fan project, not affiliated with Anthropic or OpenAI.
 
@@ -32,9 +36,9 @@ Lil Agent Settings › Agents, then use the **+** button in Input Monitoring to 
 Quit and reopen the app if macOS requests it. Removing an older entry and adding the current app can
 also resolve a stale entry after signing or bundle-identifier changes.
 
-## Signed Mac releases
+## Optional Developer ID signing and notarization
 
-People installing the release download `Lil-Agent-macOS.dmg`, open it, drag **Lil Agent** to
+For the signed and notarized workflow below, people installing the release download `Lil-Agent-macOS.dmg`, open it, drag **Lil Agent** to
 **Applications**, and launch it there. They do not need Xcode. Input Monitoring is needed for
 typing reactions, and music reactions require permission to control Spotify or Music. Claude Code
 or Codex is only needed for its corresponding agent integration.

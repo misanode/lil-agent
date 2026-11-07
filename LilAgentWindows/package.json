@@ -62,7 +62,10 @@
     "mac": {
       "target": "dmg",
       "icon": "assets/icon.icns",
-      "category": "public.app-category.entertainment"
+      "category": "public.app-category.entertainment",
+      "extendInfo": {
+        "NSAppleEventsUsageDescription": "Lil Agent checks whether Spotify or Music is playing so it can dance along."
+      }
     },
     "npmRebuild": false,
     "directories": {
