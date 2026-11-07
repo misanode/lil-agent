@@ -1,0 +1,11 @@
+<svg width="1000" height="777" viewBox="0 0 1000 777" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="card">
+<rect width="1000" height="777" rx="100" fill="url(#card-gradient)"/>
+</g>
+<defs>
+<linearGradient id="card-gradient" x1="0" y1="0" x2="469.396" y2="1020.95" gradientUnits="userSpaceOnUse">
+<stop stop-color="#312C2D"/>
+<stop offset="1" stop-color="#7E6345"/>
+</linearGradient>
+</defs>
+</svg>

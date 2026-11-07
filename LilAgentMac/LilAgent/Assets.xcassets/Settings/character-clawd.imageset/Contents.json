@@ -1,0 +1,6 @@
+{
+  "images" : [
+    { "filename" : "character-clawd.png", "idiom" : "universal" }
+  ],
+  "info" : { "author" : "xcode", "version" : 1 }
+}

@@ -1,0 +1,6 @@
+build/
+release/
+xcuserdata/
+*.xcuserstate
+.DS_Store
+LocalSigning.xcconfig

@@ -1,0 +1,4 @@
+CODE_SIGN_IDENTITY = -
+CODE_SIGN_STYLE = Manual
+
+#include? "LocalSigning.xcconfig"

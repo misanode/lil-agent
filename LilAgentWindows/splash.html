@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self'" />
+    <title>Lil Agent</title>
+    <style>
+      :root { --gap: 18px; --spinner: 20px; --edge: 2px; }
+      html, body { margin: 0; height: 100%; overflow: hidden; background: transparent; user-select: none; }
+      #splash { position: fixed; inset: 0; }
+      .card { position: absolute; left: 0; top: 0; width: 100vw; aspect-ratio: 1000 / 777; }
+      .card img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: 0; }
+      .spinner { position: absolute; left: calc(50% - var(--spinner) / 2); bottom: var(--edge); width: var(--spinner); height: var(--spinner); opacity: 0; overflow: visible; }
+      .spinner circle { fill: none; }
+      .track { stroke: rgba(49, 44, 45, 0.5); stroke-width: 4; }
+      .arc { stroke: #fff; stroke-width: 2.25; stroke-linecap: round; stroke-dasharray: 14.07 50.27; }
+    </style>
+  </head>
+  <body>
+    <div id="splash" role="progressbar" aria-label="Lil Agent is loading" aria-busy="true">
+      <div class="card">
+        <img id="card" src="./splash/card.svg" alt="" />
+        <img id="logo" src="./splash/logo.svg" alt="" />
+        <img id="wordmark" src="./splash/wordmark.svg" alt="" />
+      </div>
+      <svg class="spinner" viewBox="0 0 20 20" aria-hidden="true">
+        <circle class="track" cx="10" cy="10" r="8" />
+        <circle class="arc" cx="10" cy="10" r="8" />
+      </svg>
+    </div>
+    <script type="module" src="/src/splash/splash.js"></script>
+  </body>
+</html>

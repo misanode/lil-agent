@@ -1,0 +1,78 @@
+{
+  "name": "lil-agent-windows",
+  "productName": "Lil Agent",
+  "version": "1.0.0",
+  "description": "Lil Agent: a little desktop buddy that acts out what your AI coding agent is doing (Windows edition).",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "main": "electron/main.js",
+  "scripts": {
+    "assets": "node scripts/copy-assets.mjs",
+    "dev": "npm run assets && node scripts/launch.mjs --dev",
+    "build": "npm run assets && vite build",
+    "test:animation": "node --test Checks/animation.test.mjs",
+    "test:status-text": "node --test Checks/statusText.test.mjs",
+    "test:startup": "node --test Checks/startup.test.mjs",
+    "test:updates": "node --test Checks/updates.test.mjs",
+    "start": "npm run build && node scripts/launch.mjs",
+    "dist:win": "npm run build && electron-builder --win",
+    "dist:mac": "npm run build && electron-builder --mac"
+  },
+  "dependencies": {
+    "three": "^0.186.1",
+    "uiohook-napi": "^1.5.4"
+  },
+  "devDependencies": {
+    "electron": "^45.2.3",
+    "electron-builder": "^26.0.12",
+    "lucide-static": "^0.469.0",
+    "vite": "^6.4.4"
+  },
+  "build": {
+    "appId": "com.lilagent.app",
+    "productName": "Lil Agent",
+    "files": [
+      "dist/**",
+      "electron/**",
+      "assets/**",
+      "brand.js",
+      "package.json"
+    ],
+    "asarUnpack": [
+      "node_modules/uiohook-napi/**"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "artifactName": "Lil-Agent-Windows-Setup.${ext}"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "assets/icon.icns",
+      "category": "public.app-category.entertainment"
+    },
+    "npmRebuild": false,
+    "directories": {
+      "output": "release"
+    }
+  },
+  "allowScripts": {
+    "esbuild@0.25.12": true,
+    "uiohook-napi@1.5.5": true,
+    "electron-winstaller@5.4.0": true
+  },
+  "author": "Lil Agent"
+}
