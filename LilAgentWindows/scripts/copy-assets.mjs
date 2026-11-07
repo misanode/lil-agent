@@ -19,7 +19,8 @@ for (const c of ['clawd', 'codex']) {
 }
 copy(path.join(resources, 'trayTemplate.png'), path.join(root, 'assets', 'trayTemplate.png'));
 copy(path.join(resources, 'trayTemplate@2x.png'), path.join(root, 'assets', 'trayTemplate@2x.png'));
-for (const layer of ['card', 'logo', 'wordmark']) copy(path.join(resources, `splash-${layer}.svg`), path.join(root, 'public', 'splash', `${layer}.svg`));
+for (const layer of ['card', 'wordmark']) copy(path.join(resources, `splash-${layer}.svg`), path.join(root, 'public', 'splash', `${layer}.svg`));
+copy(path.join(resources, 'splash-logo.png'), path.join(root, 'public', 'splash', 'logo.png'));
 
 const ICONS = [
   'settings', 'palette', 'smile', 'sparkles', 'command', 'download', 'rotate-ccw', 'pin', 'power', 'power-off', 'move-diagonal',

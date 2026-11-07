@@ -1,4 +1,8 @@
 <p align="center">
+  <img src=".github/assets/lil-agent-3d.png" alt="Lil Agent" width="149" />
+</p>
+
+<p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset=".github/assets/readme-hero-dark.svg" />
     <img src=".github/assets/readme-hero-light.svg" alt="Lil Agent — A little desktop companion for your AI coding sessions." width="1200" />

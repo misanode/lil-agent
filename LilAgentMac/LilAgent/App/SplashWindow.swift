@@ -89,15 +89,15 @@ final class SplashWindow: NSPanel {
     private static func artwork(_ size: CGSize, scale: CGFloat) -> [CGImage]? {
         let w = Int((size.width * scale).rounded()), h = Int((size.height * scale).rounded())
         var images: [CGImage] = []
-        for name in ["splash-card", "splash-logo", "splash-wordmark"] {
-            guard let url = Bundle.main.url(forResource: name, withExtension: "svg"), let svg = NSImage(contentsOf: url),
+        for (name, type) in [("splash-card", "svg"), ("splash-logo", "png"), ("splash-wordmark", "svg")] {
+            guard let url = Bundle.main.url(forResource: name, withExtension: type), let art = NSImage(contentsOf: url),
                   let rep = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: w, pixelsHigh: h, bitsPerSample: 8, samplesPerPixel: 4,
                                              hasAlpha: true, isPlanar: false, colorSpaceName: .deviceRGB, bytesPerRow: 0, bitsPerPixel: 0),
                   let context = NSGraphicsContext(bitmapImageRep: rep) else { return nil }
             NSGraphicsContext.saveGraphicsState()
             NSGraphicsContext.current = context
             context.imageInterpolation = .high
-            svg.draw(in: NSRect(x: 0, y: 0, width: w, height: h))
+            art.draw(in: NSRect(x: 0, y: 0, width: w, height: h))
             NSGraphicsContext.restoreGraphicsState()
             guard let image = rep.cgImage else { return nil }
             images.append(image)

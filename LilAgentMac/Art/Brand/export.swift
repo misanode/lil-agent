@@ -124,11 +124,26 @@ func ico(_ sizes: [Int], _ url: URL) {
     do { try data.write(to: url) } catch { fail("Can't write \(url.path): \(error)") }
 }
 
+func splashBadge(width: Int) -> NSBitmapImageRep {
+    guard let data = try? Data(contentsOf: source("Source/lil-agent-3d.png")), let badge = NSBitmapImageRep(data: data)?.cgImage else {
+        fail("Can't read Source/lil-agent-3d.png")
+    }
+    let unit = CGFloat(width) / 1000
+    let height = Int((777 * unit).rounded())
+    let h = 410 * unit
+    let w = h * CGFloat(badge.width) / CGFloat(badge.height)
+    return bitmap(width, height) { ctx in
+        ctx.interpolationQuality = .high
+        ctx.draw(badge, in: CGRect(x: 500 * unit - w / 2, y: CGFloat(height) - 304 * unit - h / 2, width: w, height: h))
+    }
+}
+
 checkProvenance()
 
-for name in ["splash-card", "splash-logo", "splash-wordmark"] {
+for name in ["splash-card", "splash-wordmark"] {
     copy("\(name).svg", to: resources.appendingPathComponent("\(name).svg"))
 }
+write(splashBadge(width: 1400), resources.appendingPathComponent("splash-logo.png"))
 
 write(mascot(width: 23, height: 16), resources.appendingPathComponent("trayTemplate.png"))
 write(mascot(width: 46, height: 32), resources.appendingPathComponent("trayTemplate@2x.png"))
