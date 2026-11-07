@@ -50,11 +50,52 @@ are generated with the rest of the branding by `swift ../LilAgentMac/Art/Brand/e
 `npm run test:animation`, `npm run test:status-text`, `npm run test:startup` (splash and startup coordination) and
 `npm run test:updates` run the checks.
 
-**Updates:** Settings › General checks the latest GitHub release of `UPDATE_REPO` (in `brand.js`), and the app checks quietly
-at launch and daily. A newer release shows **Update Available** there and in the tray menu, opening the release page. Raise
-`version` in `package.json`, build, and publish a release tagged `v<version>` with the installers attached.
-Keep the download filenames used by the root README: `Lil-Agent-Electron-macOS-arm64.zip`, `Lil-Agent-Windows-Setup.exe`,
-and, if included, `Lil-Agent-Native-Swift-macOS.zip`. Electron Builder's default Mac filename may need renaming before upload.
+## Updates
+
+The app checks for updates quietly at launch and daily. You can also check from Settings › General.
+On **Windows**, choosing an available update in Settings or the tray downloads the NSIS installer, checks it against
+the update feed's SHA-512 checksum, then installs the update and restarts Lil Agent. Windows may still require security
+or administrator approval. Failed checks or downloads leave the current installation in place.
+
+Earlier check-only builds, including **v1.0.0**, need one manual installation of an updater-enabled Windows build.
+After that bootstrap, later higher-version releases can use the in-app update flow. Uploading new release files does
+not add updater code to an already installed older app.
+
+The **Mac Electron** build continues to open the release page for manual downloads. Its current ad hoc signature does
+not provide the stable signing identity needed for Squirrel.Mac update validation. Code signing and notarization are
+separate: omitting notarization alone is not the updater limitation. The optional **native Swift** app also retains its
+manual release-page update flow.
+
+### Preparing Windows update files locally
+
+The Windows NSIS build uses an explicit GitHub publish provider. Keep its repository settings consistent with
+`UPDATE_REPO` in `brand.js`. To prepare local files without publishing:
+
+```bash
+npm run build
+npx electron-builder --win --x64 --arm64 --publish never
+```
+
+The configured combined installer contains x64 and ARM64 builds. Both use **one `latest.yml`**, rather than separate
+architecture manifests. The packaged application includes its own `resources/app-update.yml`; that file configures
+the updater and is not a separate release download.
+
+Each future Windows release needs these matching files from the same build:
+
+- `Lil-Agent-Windows-Setup.exe`
+- `Lil-Agent-Windows-Setup.exe.blockmap`
+- `latest.yml`
+
+Increase `version` in `package.json` for each update. When publication is authorized, use a release tag matching
+`v<version>` and attach all three files. Preserve the generated filenames and file bytes so the manifest's URLs and
+checksums remain correct. Build output alone does not make an update available to installed apps.
+
+Keep the manual Mac download filenames used by the root README: `Lil-Agent-Electron-macOS-arm64.zip` and, if included,
+`Lil-Agent-Native-Swift-macOS.zip`. Electron Builder's default Mac filename may need renaming before upload.
+Windows installation and upgrade behavior still needs validation on a Windows PC.
+
+See [Electron Builder's update guide](https://www.electron.build/v26/docs/features/auto-update/) and
+[publish configuration](https://www.electron.build/v26/docs/publish/) for the generated metadata and provider setup.
 
 ## Differences from the native Swift app
 

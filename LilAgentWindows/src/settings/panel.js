@@ -78,10 +78,14 @@ function versionText() {
 
 function updateButton() {
   const u = state.update ?? { status: 'idle' };
-  if (u.status === 'available') return outline('Update Available', () => api.openUpdate(), { selected: true, title: `Download ${state.appName} ${u.latest}` });
+  if (u.status === 'available') return outline('Update Available', () => api.openUpdate(), { selected: true, title: u.automatic ? `Download and install ${state.appName} ${u.latest}, then restart` : `Download ${state.appName} ${u.latest}` });
+  if (u.status === 'downloading') return outline(`Downloading ${u.percent}%`, () => {}, { disabled: true });
+  if (u.status === 'downloaded') return outline('Restart to Update', () => api.openUpdate(), { selected: true });
+  if (u.status === 'installing') return outline('Installing…', () => {}, { disabled: true });
+  if (u.status === 'failed' && u.latest && u.operation !== 'check') return outline('Try Again', () => api.openUpdate(), { title: u.error ?? 'Try the update again' });
   if (u.status === 'checking') return outline('Checking…', () => {}, { disabled: true });
   if (u.status === 'current') return outline('Up to Date', () => api.checkUpdates(), { title: 'Up to date. Check for updates again' });
-  if (u.status === 'failed') return outline('Try Again', () => api.checkUpdates(), { title: 'Couldn’t check for updates. Try again' });
+  if (u.status === 'failed') return outline('Try Again', () => api.checkUpdates(), { title: u.error ?? 'Couldn’t check for updates. Try again' });
   return outline('Check', () => api.checkUpdates(), { title: 'Check for updates' });
 }
 
@@ -215,4 +219,8 @@ function render() {
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') api.close(); });
 api.onState((s) => { state = s; render(); });
 api.onTab((t) => { tab = t; render(); });
-api.get().then((s) => { state = s; render(); });
+api.get().then((s) => {
+  state = s;
+  render();
+  requestAnimationFrame(() => requestAnimationFrame(() => api.ready()));
+});

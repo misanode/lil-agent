@@ -35,6 +35,7 @@
 <p align="center">
   Written entirely in Swift with AppKit and SceneKit.<br />
   A smaller download for people who prefer native macOS frameworks.<br />
+  <sub>Updates are installed manually.</sub><br />
   <sub>macOS 14+ · Apple silicon &amp; Intel · <a href="LilAgentMac/README.md">Native setup &amp; build guide</a></sub>
 </p>
 
@@ -78,6 +79,12 @@ The release downloads are ready to run—no Node.js, npm, Xcode, or terminal com
   <summary>What permissions does it need?</summary>
   <p>On Mac, Electron typing reactions require Accessibility access; the native Swift app uses Input Monitoring. Music reactions may ask for permission to check Spotify or Music. Agent integrations are optional and use local hooks.</p>
   <p>Electron typing reactions use a US keyboard layout and have no app-level password-field filter. On Windows, this can display characters entered into password fields. Disable typing reactions when entering sensitive information.</p>
+</details>
+
+<details>
+  <summary>How do updates work?</summary>
+  <p>In the Windows Electron app from v1.0.1, click Update Available to download the update, check its checksum, install it, and restart the app. Earlier versions need one manual installation to receive this updater. Windows may still request its normal approval.</p>
+  <p>The current Mac editions open the release page for a manual download. Automatic installation for the Electron Mac app requires a consistent signing identity.</p>
 </details>
 
 <br />

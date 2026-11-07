@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
 import { app, BrowserWindow, dialog, globalShortcut, ipcMain, Menu, nativeImage, nativeTheme, net, powerMonitor, screen, shell, Tray } from 'electron';
 import { APP_ID, APP_NAME, UPDATE_REPO } from '../brand.js';
 import { CHARACTERS, SIZE_PRESETS, SettingsStore, clampSize } from './settings.js';
@@ -11,6 +12,8 @@ import { startKeyWatcher } from './keyWatcher.js';
 import { createSplash } from './splash.js';
 import { createStartup } from './startup.js';
 import { createUpdateChecker } from './updates.js';
+import { createAutomaticUpdates } from './automaticUpdates.js';
+import { createPanelPresentation } from './panelPresentation.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DEV_URL = process.env.VITE_DEV_SERVER_URL;
@@ -64,6 +67,7 @@ if (DEBUG.character && CHARACTERS[DEBUG.character]) store.values.character = DEB
 if (DEBUG.size) store.values.petSize = clampSize(DEBUG.size);
 let win = null;
 let settingsWin = null;
+let settingsPresentation = null;
 let tray = null;
 let petState = 'boot';
 let idleSleeping = false;
@@ -77,15 +81,20 @@ let cursorTimer = null;
 let splash = null;
 let startup = null;
 let startupTimer = null;
-const updates = createUpdateChecker({
+const automaticUpdates = process.platform === 'win32' && app.isPackaged && !testing && !process.env.LILAGENT_UPDATE_REPO;
+const onUpdateChange = () => {
+  buildTray();
+  settingsWin?.webContents.send('panel:state', panelState());
+};
+const updates = automaticUpdates ? createAutomaticUpdates({
+  updater: createRequire(import.meta.url)('electron-updater').autoUpdater,
+  onChange: onUpdateChange,
+}) : createUpdateChecker({
   current: app.getVersion(),
   repo: process.env.LILAGENT_UPDATE_REPO || UPDATE_REPO,
   userAgent: APP_NAME.replace(/\s+/g, '-'),
   fetch: (url, options) => net.fetch(url, options),
-  onChange: () => {
-    buildTray();
-    settingsWin?.webContents.send('panel:state', panelState());
-  },
+  onChange: onUpdateChange,
 });
 const replies = new Map();
 let replyId = 0;
@@ -229,8 +238,13 @@ function buildTray() {
   const keyNote = keys?.status === 'needs-permission' ? ' (allow Accessibility)' : keys?.status === 'unavailable' ? ' (unavailable)' : '';
   const name = CHARACTERS[s.character] ?? APP_NAME;
   const update = updates.state;
+  const updateItem = update.status === 'available' ? { label: `Update Available (${update.latest})…`, click: () => openUpdatePage() }
+    : update.status === 'downloading' ? { label: `Downloading Update (${update.percent}%)…`, enabled: false }
+      : update.status === 'downloaded' ? { label: 'Restart to Update…', click: () => openUpdatePage() }
+        : update.status === 'installing' ? { label: 'Installing Update…', enabled: false }
+          : update.status === 'failed' && update.latest && update.operation !== 'check' ? { label: 'Retry Update…', click: () => openUpdatePage() } : null;
   tray.setContextMenu(Menu.buildFromTemplate([
-    ...(update.status === 'available' ? [{ label: `Update Available (${update.latest})…`, click: () => openUpdatePage() }, { type: 'separator' }] : []),
+    ...(updateItem ? [updateItem, { type: 'separator' }] : []),
     { label: 'Settings…', click: () => showSettingsBesideMascot() },
     { label: hidden ? `Show ${name}` : `Hide ${name}`, accelerator: s.showHideShortcut ? SHORTCUT : undefined, registerAccelerator: false, click: () => toggleMascot() },
     { type: 'separator' },
@@ -319,11 +333,19 @@ function panelState() {
     shortcutErrors,
     shortcutLabel: SHORTCUT_LABEL,
     platform: process.platform,
-    update: { status: updates.state.status, latest: updates.state.latest ?? null },
+    update: {
+      status: updates.state.status,
+      latest: updates.state.latest ?? null,
+      automatic: automaticUpdates,
+      percent: updates.state.percent ?? 0,
+      operation: updates.state.operation ?? null,
+      error: updates.state.error ?? null,
+    },
   };
 }
 
 function openUpdatePage() {
+  if (automaticUpdates) return updates.apply();
   const { status, page } = updates.state;
   if (status === 'available' && page) shell.openExternal(page);
 }
@@ -348,7 +370,7 @@ function panelOrigin(size, pet) {
 }
 
 function createSettingsWindow() {
-  settingsWin = new BrowserWindow({
+  const panel = settingsWin = new BrowserWindow({
     ...PANEL_SIZE,
     minWidth: PANEL_SIZE.width,
     minHeight: 380,
@@ -362,10 +384,30 @@ function createSettingsWindow() {
     skipTaskbar: false,
     webPreferences: { preload: path.join(__dirname, 'preload.cjs'), contextIsolation: true, sandbox: true },
   });
-  settingsWin.on('closed', () => (settingsWin = null));
-  for (const ev of ['focus', 'show', 'moved']) settingsWin.on(ev, () => keepMascotInFront());
-  if (DEV_URL) settingsWin.loadURL(new URL('settings.html', DEV_URL).href);
-  else settingsWin.loadFile(path.join(__dirname, '..', 'dist', 'settings.html'));
+  settingsPresentation = createPanelPresentation({
+    window: panel,
+    prepare: prepareSettingsWindow,
+    activate: () => {
+      if (process.platform === 'darwin') app.focus({ steal: true });
+    },
+    afterShow: keepMascotInFront,
+  });
+  panel.on('closed', () => {
+    if (settingsWin !== panel) return;
+    settingsWin = null;
+    settingsPresentation = null;
+  });
+  for (const ev of ['focus', 'show', 'moved']) panel.on(ev, () => keepMascotInFront());
+  panel.webContents.once('render-process-gone', (_e, details) => {
+    console.error(`Settings stopped: ${details.reason}`);
+    if (!panel.isDestroyed()) panel.destroy();
+  });
+  const loading = DEV_URL ? panel.loadURL(new URL('settings.html', DEV_URL).href)
+    : panel.loadFile(path.join(__dirname, '..', 'dist', 'settings.html'));
+  loading.catch((err) => {
+    console.error(`Settings couldn't load: ${err.message}`);
+    if (!panel.isDestroyed()) panel.destroy();
+  });
 }
 
 function keepMascotInFront() {
@@ -373,20 +415,20 @@ function keepMascotInFront() {
   if (!store.values.keepOnTop) win.moveTop();
 }
 
-async function showSettings(petRect) {
-  if (!settingsWin) createSettingsWindow();
-  settingsWin.webContents.send('panel:state', panelState());
+function prepareSettingsWindow(panel, petRect) {
+  panel.webContents.send('panel:state', panelState());
   if (petRect && petRect.width > 0 && win) {
     const b = win.getBounds();
     const pet = { x: b.x + petRect.x, y: b.y + petRect.y, width: petRect.width, height: petRect.height };
-    const [w, h] = settingsWin.getSize();
+    const [w, h] = panel.getSize();
     const o = panelOrigin({ width: w, height: h }, pet);
-    settingsWin.setPosition(o.x, o.y);
-  } else if (!settingsWin.isVisible()) settingsWin.center();
-  settingsWin.show();
-  settingsWin.focus();
-  app.focus({ steal: true });
-  keepMascotInFront();
+    panel.setPosition(o.x, o.y);
+  } else if (!panel.isVisible()) panel.center();
+}
+
+async function showSettings(petRect) {
+  if (!settingsWin) createSettingsWindow();
+  return settingsPresentation.show(petRect);
 }
 
 async function showSettingsBesideMascot() {
@@ -434,6 +476,9 @@ ipcMain.on('fatal', (e, msg) => {
 });
 
 ipcMain.handle('panel:get', () => panelState());
+ipcMain.on('panel:ready', (e) => {
+  if (e.sender === settingsWin?.webContents) settingsPresentation?.rendered();
+});
 ipcMain.on('panel:change', (_e, patch) => store.update((v) => Object.assign(v, patch)));
 ipcMain.on('panel:allow', (_e, { state, on }) => store.update((v) => {
   v.disabled = v.disabled.filter((s) => s !== state);

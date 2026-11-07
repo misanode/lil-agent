@@ -26,6 +26,7 @@ contextBridge.exposeInMainWorld('pet', {
 
 contextBridge.exposeInMainWorld('panel', {
   get: () => ipcRenderer.invoke('panel:get'),
+  ready: () => ipcRenderer.send('panel:ready'),
   change: (patch) => ipcRenderer.send('panel:change', patch),
   allow: (state, on) => ipcRenderer.send('panel:allow', { state, on }),
   preview: (state) => ipcRenderer.send('panel:preview', state),
