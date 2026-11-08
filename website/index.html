@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#faf8f5">
+  <meta name="description" content="A little desktop companion that acts out what your local Claude Code or Codex agent is doing. For Mac and Windows.">
+  <meta property="og:title" content="Lil Agent — A little desktop companion for your AI coding sessions.">
+  <meta property="og:description" content="Choose Clawd or Codex and watch your companion act out what your coding agent is doing. For Mac and Windows.">
+  <meta property="og:type" content="website">
+  <title>Lil Agent — A little desktop companion for your AI coding sessions.</title>
+  <link rel="icon" href="assets/logo.png" type="image/png">
+  <link rel="stylesheet" href="styles.css">
+  <script>document.documentElement.classList.add('js')</script>
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="#" aria-label="Lil Agent home">
+        <svg class="brand-logo" viewBox="0 0 274 275" fill="none" aria-hidden="true"> <path d="M171 181.439C176.832 181.439 181.561 186.168 181.561 192C181.561 197.832 176.832 202.561 171 202.561H136.738C130.906 202.561 126.178 197.832 126.178 192C126.178 186.168 130.906 181.439 136.738 181.439H171ZM71.4415 132.625C75.5144 128.451 82.2007 128.369 86.3751 132.441L113.023 158.441C115.059 160.429 116.208 163.154 116.208 166C116.208 168.846 115.059 171.571 113.023 173.559L86.3751 199.559C82.2007 203.631 75.5144 203.549 71.4415 199.375C67.3687 195.201 67.4508 188.514 71.6251 184.441L90.5255 166L71.6251 147.559C67.4508 143.486 67.3687 136.799 71.4415 132.625Z" fill="currentColor"/> <path d="M230.237 15.9174C237.386 41.8323 246.322 50.7684 273.131 57.9174C246.322 65.0663 237.386 74.0025 230.237 99.9174C223.088 74.0025 214.152 65.0663 187.344 57.9174C214.152 50.7684 223.088 41.8323 230.237 15.9174Z" fill="currentColor"/> <path d="M166.5 0C171.417 17.8229 177.563 23.9688 196 28.8854C177.563 33.8021 171.417 39.9479 166.5 57.7708C161.583 39.9479 155.438 33.8021 137 28.8854C155.438 23.9688 161.583 17.8229 166.5 0Z" fill="currentColor"/> <path d="M31.0001 192.459V213L31.0119 213.903C31.491 232.816 46.9722 248 66.0001 248V262.5C66.0001 269.404 71.5966 275 78.5001 275C85.4037 275 91.0001 269.404 91.0001 262.5V248H158V262.5C158 269.404 163.597 275 170.5 275C177.404 275 183 269.404 183 262.5V248L183.903 247.988C202.516 247.517 217.517 232.516 217.988 213.903L218 213V186.814L233.547 200.275C238.766 204.794 246.66 204.226 251.179 199.007C255.698 193.788 255.13 185.894 249.911 181.375L220.815 156.182C219.942 155.427 218.994 154.813 218 154.34V129C218 109.972 202.816 94.4909 183.903 94.0117L183 94H66.0001C46.6702 94 31.0001 109.67 31.0001 129V155.071C29.9941 155.709 29.0631 156.503 28.2432 157.45L3.05024 186.546C-1.46866 191.766 -0.90106 199.66 4.31801 204.179C9.53708 208.697 17.4313 208.13 21.9502 202.911L31.0001 192.459ZM183 228H66.0001C57.7159 228 51.0001 221.284 51.0001 213V129C51.0001 120.716 57.7159 114 66.0001 114H183C191.284 114 198 120.716 198 129V213C198 221.284 191.284 228 183 228Z" fill-rule="evenodd" clip-rule="evenodd" fill="currentColor"/> </svg>
+        <span>Lil Agent</span>
+      </a>
+      <nav aria-label="Main navigation">
+        <a href="#features">Features</a>
+        <a href="#faq">FAQ</a>
+        <a href="https://github.com/misanode/lil-agent">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Floating download button: appears once the hero buttons scroll away -->
+  <a class="get-button float-get" data-platform-link href="https://github.com/misanode/lil-agent/releases/latest/download/Lil-Agent-Electron-macOS-arm64.zip" tabindex="-1" aria-hidden="true">
+    <img data-platform-img src="assets/get-for-mac.svg" width="240" height="70" alt="Get for Mac">
+  </a>
+
+  <main id="main">
+    <!-- Hero -->
+    <section class="hero shell" aria-labelledby="hero-title">
+      <img class="hero-logo" src="assets/lil-agent-glass.jpg" width="720" height="720" alt="" decoding="async" fetchpriority="high">
+      <h1 id="hero-title" class="rise">
+        <span class="w"><span style="--i:0">A</span></span>
+        <span class="w"><span style="--i:1">little</span></span>
+        <span class="w"><span style="--i:2">desktop</span></span>
+        <span class="w"><span style="--i:3">companion</span></span><br>
+        <span class="w"><span style="--i:4">for</span></span>
+        <span class="w"><span style="--i:5">your</span></span>
+        <em><span class="w"><span style="--i:6">AI</span></span>
+        <span class="w"><span style="--i:7">coding</span></span>
+        <span class="w"><span style="--i:8">sessions.</span></span></em>
+      </h1>
+      <hr class="hairline fade-up" style="--d:1s">
+      <p class="lede fade-up" style="--d:1.15s">Choose Clawd or Codex and watch your companion act out what your local Claude Code or Codex agent is doing.</p>
+
+      <div class="get-buttons fade-up" style="--d:1.3s" id="hero-get">
+        <a class="get-button" href="https://github.com/misanode/lil-agent/releases/latest/download/Lil-Agent-Electron-macOS-arm64.zip">
+          <img src="assets/get-for-mac.svg" width="240" height="70" alt="Get for Mac — Electron app for Apple silicon">
+        </a>
+        <a class="get-button" href="https://github.com/misanode/lil-agent/releases/latest/download/Lil-Agent-Windows-Setup.exe">
+          <img src="assets/get-for-windows.svg" width="288" height="70" alt="Get for Windows — Electron app">
+        </a>
+      </div>
+      <p class="fine fade-up" style="--d:1.4s">Electron for macOS and Windows. The Mac download supports Apple silicon.</p>
+    </section>
+
+    <!-- Product stage -->
+    <section class="stage-wrap" aria-label="Illustration of Lil Agent on a desktop">
+      <div class="stage-controls fade-up" style="--d:1.5s">
+        <div class="segmented status-seg" role="group" aria-label="Agent status">
+          <span class="seg-thumb" aria-hidden="true"></span>
+          <button type="button" data-status="working" aria-pressed="true" aria-controls="desktop-demo"><i class="seg-dot dot-working"></i>Working</button>
+          <button type="button" data-status="attention" aria-pressed="false" aria-controls="desktop-demo"><i class="seg-dot dot-attention"></i>Needs you</button>
+          <button type="button" data-status="done" aria-pressed="false" aria-controls="desktop-demo"><i class="seg-dot dot-done"></i>Done</button>
+        </div>
+      </div>
+
+      <div class="stage-perspective">
+        <div class="stage-glow" aria-hidden="true"></div>
+        <figure class="stage" id="desktop-demo" data-state="working">
+          <div class="wallpaper" aria-hidden="true"></div>
+          <div class="menubar" aria-hidden="true">
+            <span class="mb-left">
+              <img class="mb-sym mb-apple" src="assets/menubar/apple.png" width="45" height="45" alt="">
+              <b>Terminal</b><span class="mb-menu">Shell</span><span class="mb-menu">Edit</span><span class="mb-menu">View</span><span class="mb-menu">Window</span><span class="mb-menu">Help</span>
+            </span>
+            <span class="mb-right">
+              <img class="mb-logo" src="assets/menu-bar-mascot.svg" width="254" height="181" alt="">
+              <img class="mb-sym mb-batt" src="assets/menubar/battery.png" width="77" height="38" alt="">
+              <img class="mb-sym mb-wifi" src="assets/menubar/wifi.png" width="59" height="45" alt="">
+              <img class="mb-sym mb-cc" src="assets/menubar/control-center.png" width="53" height="50" alt="">
+              <span class="menubar-clock" id="clock">Sat 9:41 AM</span>
+            </span>
+          </div>
+
+          <div class="mac-window" aria-hidden="true">
+            <div class="mac-titlebar">
+              <span class="traffic"><i class="tl-close"></i><i class="tl-min"></i><i class="tl-max"></i></span>
+              <span class="mac-title"><svg viewBox="0 0 18 14" width="17" height="13"><path fill="#8e8e93" d="M0 2.2C0 1 1 0 2.2 0h4.1l1.8 1.8h7.7c1.2 0 2.2 1 2.2 2.2v7.8c0 1.2-1 2.2-2.2 2.2H2.2C1 14 0 13 0 11.8Z"/></svg><span id="term-title">lil-agent — ✳ Dark mode toggle — claude — 80×24</span></span>
+            </div>
+            <div class="term">
+              <div class="term-log" id="term"></div>
+              <div class="term-input"><span>❯</span><i class="caret"></i></div>
+              <div class="term-foot"><span class="y">⏵⏵ auto mode on</span> <span class="dim">(shift+tab to cycle)</span></div>
+            </div>
+          </div>
+
+          <div class="pet">
+            <div class="bubble" aria-hidden="true"><span id="bubble-text">Thinking things through…</span></div>
+            <span class="pet-shadow" aria-hidden="true"></span>
+            <div class="live" data-live="stage" aria-hidden="true"></div>
+            <img id="demo-pet" class="pet-image" src="assets/clawd.png" alt="Clawd, the orange desktop companion" width="192" height="192" decoding="async">
+            <span class="spark spark-one" aria-hidden="true">✦</span>
+            <span class="spark spark-two" aria-hidden="true">✦</span>
+          </div>
+
+          <div class="dock" aria-hidden="true">
+            <span class="dock-item" style="--i:0"><img src="assets/dock/finder.png" width="128" height="128" alt=""></span>
+            <span class="dock-item" style="--i:1"><img src="assets/dock/apps.png" width="128" height="128" alt=""></span>
+            <span class="dock-item" style="--i:2"><img src="assets/dock/safari.png" width="128" height="128" alt=""></span>
+            <span class="dock-item" style="--i:3"><img src="assets/dock/messages.png" width="128" height="128" alt=""></span>
+            <span class="dock-item" style="--i:4"><img src="assets/dock/music.png" width="128" height="128" alt=""></span>
+            <span class="dock-item" style="--i:5"><img src="assets/dock/settings.png" width="128" height="128" alt=""></span>
+            <span class="dock-item" style="--i:6"><img src="assets/dock/terminal.png" width="128" height="128" alt=""><b></b></span>
+            <span class="dock-sep" style="--i:7"></span>
+            <span class="dock-item" style="--i:8"><img src="assets/dock/lil-agent.png" width="256" height="256" alt=""><b></b></span>
+            <span class="dock-item" style="--i:9"><img src="assets/dock/trash.png" width="256" height="256" alt=""></span>
+          </div>
+
+          <div class="scene-status" role="status" aria-live="polite" aria-atomic="true"><span class="status-dot" aria-hidden="true"></span><span id="status-text">Your agent is working.</span></div>
+        </figure>
+      </div>
+      <p class="stage-caption">Illustration</p>
+    </section>
+
+    <!-- Bento -->
+    <section class="bento-section shell" id="features" aria-labelledby="bento-title">
+      <h2 id="bento-title" class="grad-title" data-reveal>Good company for long sessions</h2>
+      <div class="bento bento-single">
+
+        <article class="card card-light" data-reveal style="--d:.15s">
+          <h3>Pick your <span class="chip chip-light"><svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path fill="currentColor" d="M10 .8c.2 0 .4.2.5.4.3 1.4.7 2.3 1.3 2.9.6.6 1.5 1.1 2.9 1.4.2.1.4.3.4.5s-.2.4-.4.5c-1.4.3-2.3.7-2.9 1.3-.6.6-1.1 1.5-1.4 2.9-.1.2-.3.4-.5.4s-.4-.2-.5-.4c-.3-1.4-.7-2.3-1.3-2.9-.6-.6-1.5-1.1-2.9-1.4-.2-.1-.4-.3-.4-.5s.2-.4.4-.5c1.4-.3 2.3-.7 2.9-1.4.6-.6 1-1.5 1.3-2.9.1-.2.3-.4.5-.4ZM4.7 7.5c.2 0 .4.2.4.4.2 1 .5 1.6 1 2 .4.4 1 .7 2 .9.2.1.4.3.4.5s-.2.4-.4.5c-1 .2-1.6.5-2 1-.4.4-.7 1-.9 2-.1.2-.3.4-.5.4s-.4-.2-.4-.4c-.2-1-.5-1.6-1-2-.4-.4-1-.7-2-.9-.2-.1-.4-.3-.4-.5s.2-.4.4-.5c1-.2 1.6-.5 2-1 .4-.4.7-1 .9-2 .1-.2.3-.4.5-.4Z"/></svg>sidekick</span></h3>
+          <p>Clawd or Codex. Drag across to compare.</p>
+          <div class="compare" id="compare" style="--x:50%">
+            <div class="compare-layer layer-clawd"><div class="live" data-live="compare-clawd" aria-hidden="true"></div><img src="assets/clawd.png" width="192" height="192" alt="Clawd" draggable="false"><span class="tag tag-left">Clawd</span></div>
+            <div class="compare-layer layer-codex"><div class="live" data-live="compare-codex" aria-hidden="true"></div><img src="assets/codex.png" width="192" height="192" alt="Codex" draggable="false"><span class="tag tag-right">Codex</span></div>
+            <span class="compare-line" aria-hidden="true"></span>
+            <span class="compare-handle" aria-hidden="true"><svg width="16" height="9" viewBox="0 0 16 9" fill="none"><path d="M4.5 7.4 1.5 4.4l3-3M11.5 7.4l3-3-3-3" stroke="currentColor" stroke-width="1.4"/></svg></span>
+            <input class="compare-range" type="range" min="0" max="100" value="50" aria-label="Compare Clawd and Codex">
+          </div>
+        </article>
+      </div>
+
+      <div class="works-with" data-reveal>
+        <span class="eyebrow">Reacts to</span>
+        <div class="works-list"><span>Claude Code</span><span>Codex</span><span>Child agents</span></div>
+      </div>
+    </section>
+
+    <!-- Feature cards -->
+    <section class="features-section shell" aria-labelledby="features-title">
+      <div class="section-head">
+        <h2 id="features-title" class="grad-title" data-reveal>Say hi to your new desk buddy</h2>
+        <p class="section-copy" data-reveal style="--d:.08s">The same animations as the app, right here. Pet one, try a mood, or give the shortcut a go.</p>
+      </div>
+      <div class="feature-rail">
+        <article class="feature" data-reveal style="--d:.05s">
+          <div class="feature-visual play-area" id="play-area">
+            <div class="live" data-live="play"></div>
+            <img id="play-pet" src="assets/clawd.png" width="192" height="192" alt="Clawd — drag me" draggable="false">
+            <span class="play-hint">Tap to pet · drag to carry · fling to throw</span>
+            <div class="mood-control">
+              <button type="button" class="mood-btn" data-mood-step="-1" aria-label="Previous mood"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+              <span class="mood-name" id="mood-name" aria-live="polite">Try a mood</span>
+              <button type="button" class="mood-btn" data-mood-step="1" aria-label="Next mood"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+            </div>
+          </div>
+          <p><strong>Pet &amp; play.</strong> Pet, carry, and throw your companion, or flip through its moods.</p>
+        </article>
+        <article class="feature" data-reveal style="--d:.15s">
+          <div class="feature-visual size-area">
+            <div class="live" data-live="size" aria-hidden="true"></div>
+            <img id="size-pet" src="assets/codex.png" width="192" height="192" alt="Codex at adjustable size" draggable="false">
+            <label class="size-control"><span>Size</span><input id="size-range" type="range" min="60" max="130" value="100" aria-label="Companion size"></label>
+          </div>
+          <p><strong>Make it yours.</strong> Tune its moods, size, and sleep behavior.</p>
+        </article>
+        <article class="feature" data-reveal style="--d:.25s">
+          <div class="feature-visual keys-area">
+            <div class="live" data-live="keys" aria-hidden="true"></div>
+            <img id="keys-pet" src="assets/clawd.png" width="192" height="192" alt="" draggable="false">
+            <div class="keys">
+              <button type="button" class="key" id="key-mod" aria-label="Toggle companion">⌘</button>
+              <span class="key-plus" aria-hidden="true">+</span>
+              <button type="button" class="key" id="key-slash" aria-label="Toggle companion">\</button>
+            </div>
+          </div>
+          <p><strong>Show or hide.</strong> One keyboard shortcut. Try <span class="nowrap"><kbd class="mod-label">⌘</kbd> <kbd>\</kbd></span> here.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- Native -->
+    <section class="native shell" aria-labelledby="native-title">
+      <h2 id="native-title" class="grad-title" data-reveal>Prefer native?</h2>
+      <a class="get-button" href="https://github.com/misanode/lil-agent/releases/latest/download/Lil-Agent-Native-Swift-macOS.zip" data-reveal style="--d:.08s">
+        <img src="assets/get-native-swift-for-mac.svg" width="330" height="70" alt="Native Swift for Mac">
+      </a>
+      <p class="section-copy" data-reveal style="--d:.14s">Written entirely in Swift with AppKit and SceneKit.<br>A smaller download for people who prefer native macOS frameworks.</p>
+      <p class="fine" data-reveal style="--d:.18s">Updates are installed manually · macOS 14+ · Apple silicon &amp; Intel · <a href="https://github.com/misanode/lil-agent/blob/main/LilAgentMac/README.md">Setup &amp; build guide</a></p>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq shell" id="faq" aria-labelledby="faq-title">
+      <h2 id="faq-title" class="grad-title" data-reveal>Frequently asked questions</h2>
+      <div class="faq-list" data-reveal style="--d:.08s">
+        <details><summary>Does it use up any tokens?<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><div class="faq-answer"><p><strong>Nope — zero!</strong> Lil Agent never talks to an AI model. Its hooks just send a tiny ping to the app on your own computer and the reply is thrown away, so nothing gets added to your agent’s context. Your usage limits stay exactly where they were. Your companion is free entertainment. </p></div></details>
+        <details><summary>Can I use it without a coding agent?<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><div class="faq-answer"><p>Yes. Lil Agent works as a desktop companion on its own. Connect local Claude Code or Codex sessions when you want reactions to agent activity.</p></div></details>
+        <details><summary>Do I need any developer tools?<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><div class="faq-answer"><p>No. The release downloads are ready to run — no Node.js, npm, Xcode, or terminal commands required. On Mac, unzip and move <strong>Lil Agent.app</strong> to Applications. On Windows, run the installer.</p></div></details>
+        <details><summary>What permissions does it need?<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><div class="faq-answer"><p>On Mac, Electron typing reactions require Accessibility access; the native Swift app uses Input Monitoring. Music reactions may ask for permission to check Spotify or Music. Agent integrations are optional and use local hooks.</p><p>Electron typing reactions use a US keyboard layout and have no app-level password-field filter. On Windows, this can display characters entered into password fields. Disable typing reactions when entering sensitive information.</p></div></details>
+        <details><summary>How do updates work?<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><div class="faq-answer"><p>In the Windows Electron app from v1.0.1, click Update Available to download the update, check its checksum, install it, and restart the app. Earlier versions need one manual installation to receive this updater. Windows may still request its normal approval.</p><p>The current Mac editions open the release page for a manual download.</p></div></details>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta shell" aria-labelledby="cta-title">
+      <div class="cta-copy" data-reveal>
+        <h2 id="cta-title" class="cta-title">A little company while your agent works.</h2>
+        <p class="cta-shimmer">Put Lil Agent on your desktop today.</p>
+        <div class="get-buttons cta-buttons">
+          <a class="get-button" href="https://github.com/misanode/lil-agent/releases/latest/download/Lil-Agent-Electron-macOS-arm64.zip">
+            <img src="assets/get-for-mac.svg" width="240" height="70" alt="Get for Mac — Electron app for Apple silicon">
+          </a>
+          <a class="get-button" href="https://github.com/misanode/lil-agent/releases/latest/download/Lil-Agent-Windows-Setup.exe">
+            <img src="assets/get-for-windows.svg" width="288" height="70" alt="Get for Windows — Electron app">
+          </a>
+        </div>
+      </div>
+      <div class="cta-keys" aria-hidden="true">
+        <span class="bigkey bigkey-mod mod-label">⌘</span>
+        <span class="bigkey bigkey-slash">\</span>
+      </div>
+    </section>
+    <div class="page-fade" aria-hidden="true"></div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell">
+      <div class="footer-top">
+        <a class="brand" href="#"><svg class="brand-logo" viewBox="0 0 274 275" fill="none" aria-hidden="true"> <path d="M171 181.439C176.832 181.439 181.561 186.168 181.561 192C181.561 197.832 176.832 202.561 171 202.561H136.738C130.906 202.561 126.178 197.832 126.178 192C126.178 186.168 130.906 181.439 136.738 181.439H171ZM71.4415 132.625C75.5144 128.451 82.2007 128.369 86.3751 132.441L113.023 158.441C115.059 160.429 116.208 163.154 116.208 166C116.208 168.846 115.059 171.571 113.023 173.559L86.3751 199.559C82.2007 203.631 75.5144 203.549 71.4415 199.375C67.3687 195.201 67.4508 188.514 71.6251 184.441L90.5255 166L71.6251 147.559C67.4508 143.486 67.3687 136.799 71.4415 132.625Z" fill="currentColor"/> <path d="M230.237 15.9174C237.386 41.8323 246.322 50.7684 273.131 57.9174C246.322 65.0663 237.386 74.0025 230.237 99.9174C223.088 74.0025 214.152 65.0663 187.344 57.9174C214.152 50.7684 223.088 41.8323 230.237 15.9174Z" fill="currentColor"/> <path d="M166.5 0C171.417 17.8229 177.563 23.9688 196 28.8854C177.563 33.8021 171.417 39.9479 166.5 57.7708C161.583 39.9479 155.438 33.8021 137 28.8854C155.438 23.9688 161.583 17.8229 166.5 0Z" fill="currentColor"/> <path d="M31.0001 192.459V213L31.0119 213.903C31.491 232.816 46.9722 248 66.0001 248V262.5C66.0001 269.404 71.5966 275 78.5001 275C85.4037 275 91.0001 269.404 91.0001 262.5V248H158V262.5C158 269.404 163.597 275 170.5 275C177.404 275 183 269.404 183 262.5V248L183.903 247.988C202.516 247.517 217.517 232.516 217.988 213.903L218 213V186.814L233.547 200.275C238.766 204.794 246.66 204.226 251.179 199.007C255.698 193.788 255.13 185.894 249.911 181.375L220.815 156.182C219.942 155.427 218.994 154.813 218 154.34V129C218 109.972 202.816 94.4909 183.903 94.0117L183 94H66.0001C46.6702 94 31.0001 109.67 31.0001 129V155.071C29.9941 155.709 29.0631 156.503 28.2432 157.45L3.05024 186.546C-1.46866 191.766 -0.90106 199.66 4.31801 204.179C9.53708 208.697 17.4313 208.13 21.9502 202.911L31.0001 192.459ZM183 228H66.0001C57.7159 228 51.0001 221.284 51.0001 213V129C51.0001 120.716 57.7159 114 66.0001 114H183C191.284 114 198 120.716 198 129V213C198 221.284 191.284 228 183 228Z" fill-rule="evenodd" clip-rule="evenodd" fill="currentColor"/> </svg><span>Lil Agent</span></a>
+        <nav class="footer-cols" aria-label="Footer">
+          <div><h3>Download</h3><ul>
+            <li><a href="https://github.com/misanode/lil-agent/releases/latest/download/Lil-Agent-Electron-macOS-arm64.zip">Mac</a></li>
+            <li><a href="https://github.com/misanode/lil-agent/releases/latest/download/Lil-Agent-Windows-Setup.exe">Windows</a></li>
+            <li><a href="https://github.com/misanode/lil-agent/releases/latest/download/Lil-Agent-Native-Swift-macOS.zip">Native Swift</a></li>
+          </ul></div>
+          <div><h3>Project</h3><ul>
+            <li><a href="https://github.com/misanode/lil-agent">GitHub</a></li>
+            <li><a href="https://github.com/misanode/lil-agent/releases">All releases</a></li>
+            <li><a href="https://github.com/misanode/lil-agent/blob/main/LICENSE">MIT license</a></li>
+          </ul></div>
+        </nav>
+      </div>
+      <a class="badge" href="https://github.com/misanode/lil-agent"><span class="badge-dot"></span>Free &amp; open source</a>
+      <div class="footer-bottom">
+        <span>© 2026 Lil Agent</span>
+        <span>Unofficial fan project. Not affiliated with Anthropic or OpenAI.</span>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
