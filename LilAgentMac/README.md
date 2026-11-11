@@ -5,7 +5,7 @@ and SceneKit, no Electron and no third-party code. Two characters: Clawd and Cod
 the Electron edition in `../LilAgentWindows`. This optional Swift edition offers native macOS frameworks and a smaller download.
 
 The native release requires macOS 14 or later and supports Apple silicon and Intel. Download `Lil-Agent-Native-Swift-macOS.zip`,
-extract it, and move **Lil Agent.app** to **Applications**. The locally prepared v1.0.0 archive is ad hoc signed and unnotarized;
+extract it, and move **Lil Agent.app** to **Applications**. Releases are signed with a self-signed certificate and not notarized;
 macOS may block its first launch. See [Apple's app-opening guidance](https://support.apple.com/en-us/102445).
 
 An unofficial fan project, not affiliated with Anthropic or OpenAI.
@@ -35,6 +35,22 @@ is missing from System Settings › Privacy & Security › Input Monitoring, cho
 Lil Agent Settings › Agents, then use the **+** button in Input Monitoring to add that exact `.app`.
 Quit and reopen the app if macOS requests it. Removing an older entry and adding the current app can
 also resolve a stale entry after signing or bundle-identifier changes.
+
+## Release signing
+
+Release builds of both Mac editions are signed with the **Lil Agent Self-Signed** certificate. macOS ties Input Monitoring
+and Apple Events permissions to the bundle identifier plus that certificate, so they stay granted across relaunches and
+updates. Ad hoc builds (before v1.0.2) tied them to the exact binary instead: every update or other copy of the app had to
+be approved again while System Settings still showed it as allowed.
+
+`bash Scripts/package.sh` builds the universal native app, signs it, and writes `../release/v<version>/Lil-Agent-Native-Swift-macOS.zip`.
+`npm run dist:mac` in `../LilAgentWindows` signs the Electron app with the same certificate.
+
+The certificate and its private key live in the publisher's login keychain, trusted for code signing only. A backup is in
+`~/.lil-agent-signing/` (`lil-agent-signing.p12` and its password); keep a copy somewhere safe and never commit it. To set up
+another Mac, import the `.p12` into the login keychain and trust `cert.pem` for code signing:
+`security add-trusted-cert -p codeSign -k ~/Library/Keychains/login.keychain-db cert.pem`. Signing a release with any
+other certificate, including a newly generated one, makes everyone grant permissions again.
 
 ## Optional Developer ID signing and notarization
 

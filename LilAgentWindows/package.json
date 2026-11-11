@@ -1,7 +1,7 @@
 {
   "name": "lil-agent-windows",
   "productName": "Lil Agent",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Lil Agent: a little desktop buddy that acts out what your AI coding agent is doing.",
   "type": "module",
   "private": true,
@@ -72,6 +72,8 @@
     "mac": {
       "target": "dmg",
       "icon": "assets/icon.icns",
+      "identity": "Lil Agent Self-Signed",
+      "entitlements": "entitlements.mac.plist",
       "category": "public.app-category.entertainment",
       "extendInfo": {
         "NSAppleEventsUsageDescription": "Lil Agent checks whether Spotify or Music is playing so it can dance along."

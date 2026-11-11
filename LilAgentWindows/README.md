@@ -35,8 +35,8 @@ The native Swift app remains in `../LilAgentMac` and requires macOS 14 or later.
 
 For a local Mac app archive without notarization, run `npm run build`, then
 `npx electron-builder --mac zip --arm64 --publish never --config.mac.notarize=false`.
-Signing and notarization depend on your Electron Builder configuration. The locally prepared release is ad hoc signed and unnotarized;
-macOS may block its first launch. See [Apple's app-opening guidance](https://support.apple.com/en-us/102445).
+Mac builds sign with the **Lil Agent Self-Signed** certificate (`build.mac.identity` in `package.json`) and
+`entitlements.mac.plist`; see Signing in `../LilAgentMac/README.md`. They are not notarized, so macOS may block the first launch. See [Apple's app-opening guidance](https://support.apple.com/en-us/102445).
 
 Quit the other Lil Agent edition before launching: both use the local agent hook port. On Mac, Electron stores its settings
 in `~/Library/Application Support/Lil Agent (Electron)/`; the native Swift app uses a separate settings folder.
@@ -61,8 +61,8 @@ Earlier check-only builds, including **v1.0.0**, need one manual installation of
 After that bootstrap, later higher-version releases can use the in-app update flow. Uploading new release files does
 not add updater code to an already installed older app.
 
-The **Mac Electron** build continues to open the release page for manual downloads. Its current ad hoc signature does
-not provide the stable signing identity needed for Squirrel.Mac update validation. Code signing and notarization are
+The **Mac Electron** build continues to open the release page for manual downloads. Its self-signed certificate keeps macOS
+permissions stable across updates, but Squirrel.Mac update validation still expects a Developer ID signature. Code signing and notarization are
 separate: omitting notarization alone is not the updater limitation. The optional **native Swift** app also retains its
 manual release-page update flow.
 
