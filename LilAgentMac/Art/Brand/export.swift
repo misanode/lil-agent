@@ -1,5 +1,4 @@
 import AppKit
-import SwiftUI
 
 let brand = URL(fileURLWithPath: #filePath).deletingLastPathComponent()
 let mac = brand.appendingPathComponent("../..").standardizedFileURL
@@ -33,7 +32,7 @@ func checkProvenance() {
     for name in ["splash-logo.svg", "splash-wordmark.svg"] where !Set(pathData(source(name))).isSubset(of: splash) {
         fail("\(name) no longer matches Source/splash.svg")
     }
-    for name in ["menu-bar-mascot.svg", "app-icon.svg"] where !Set(pathData(source(name))).isSubset(of: logo) {
+    for name in ["menu-bar-mascot.svg"] where !Set(pathData(source(name))).isSubset(of: logo) {
         fail("\(name) no longer matches Source/lil-agent-logo.svg")
     }
 }
@@ -63,35 +62,43 @@ func copy(_ name: String, to url: URL) {
     do { try fm.copyItem(at: source(name), to: url) } catch { fail("Can't copy \(name): \(error)") }
 }
 
-func plate(_ rect: CGRect, radius: CGFloat) -> CGPath {
-    RoundedRectangle(cornerRadius: radius, style: .continuous).path(in: rect).cgPath
-}
-
-let master = svg("app-icon.svg")
+// The app icon master is the supplied raster plate. Drop its faint baked-in shadow (the Mac icon draws its own) and crop
+// away the transparent margin so the plate fills the draw rect.
+let master: CGImage = {
+    guard let data = try? Data(contentsOf: source("Source/app-icon.png")), let rep = NSBitmapImageRep(data: data) else {
+        fail("Can't read Source/app-icon.png")
+    }
+    var minX = rep.pixelsWide, minY = rep.pixelsHigh, maxX = -1, maxY = -1
+    var pixel = [Int](repeating: 0, count: 4)
+    var clear = [Int](repeating: 0, count: rep.samplesPerPixel)
+    for y in 0..<rep.pixelsHigh {
+        for x in 0..<rep.pixelsWide {
+            rep.getPixel(&pixel, atX: x, y: y)
+            if pixel[3] < 64 { rep.setPixel(&clear, atX: x, y: y); continue }
+            minX = min(minX, x); maxX = max(maxX, x); minY = min(minY, y); maxY = max(maxY, y)
+        }
+    }
+    guard maxX >= minX, let image = rep.cgImage,
+          let plate = image.cropping(to: CGRect(x: minX, y: minY, width: maxX - minX + 1, height: maxY - minY + 1)) else {
+        fail("Source/app-icon.png is empty")
+    }
+    return plate
+}()
 
 func macIcon(_ px: Int) -> NSBitmapImageRep {
     bitmap(px, px) { ctx in
         let k = CGFloat(px) / 1024
         let rect = CGRect(x: 100 * k, y: 100 * k, width: 824 * k, height: 824 * k)
-        let shape = plate(rect, radius: 185.4 * k)
-        ctx.saveGState()
+        ctx.interpolationQuality = .high
         ctx.setShadow(offset: CGSize(width: 0, height: -10 * k), blur: 20 * k, color: NSColor(white: 0, alpha: 0.3).cgColor)
-        ctx.addPath(shape)
-        ctx.setFillColor(NSColor(srgbRed: 0x7E / 255.0, green: 0x63 / 255.0, blue: 0x45 / 255.0, alpha: 1).cgColor)
-        ctx.fillPath()
-        ctx.restoreGState()
-        ctx.addPath(shape)
-        ctx.clip()
-        master.draw(in: rect)
+        ctx.draw(master, in: rect)
     }
 }
 
 func windowsIcon(_ px: Int) -> NSBitmapImageRep {
     bitmap(px, px) { ctx in
-        let rect = CGRect(x: 0, y: 0, width: px, height: px)
-        ctx.addPath(plate(rect, radius: CGFloat(px) * 0.18))
-        ctx.clip()
-        master.draw(in: rect)
+        ctx.interpolationQuality = .high
+        ctx.draw(master, in: CGRect(x: 0, y: 0, width: px, height: px))
     }
 }
 

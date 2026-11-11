@@ -100,9 +100,9 @@ build the packages, and publish a GitHub release tagged `v` plus that version (f
 ## Branding
 
 The logo, splash, app icon and menu-bar artwork live in `Art/Brand`: the supplied originals in `Art/Brand/Source`
-(including `lil-agent-3d.png`, the rendered 3D badge the splash shows), and the named layers derived from them
-(`splash-card.svg`, `splash-logo.svg`, `splash-wordmark.svg`, `menu-bar-mascot.svg` without the sparkles, and the
-`app-icon.svg` master). After editing them, run
+(including `lil-agent-3d.png`, the rendered 3D badge the splash shows, and `app-icon.png`, the app icon master for both
+apps), and the named layers derived from them (`splash-card.svg`, `splash-logo.svg`, `splash-wordmark.svg`, and
+`menu-bar-mascot.svg` without the sparkles). After editing them, run
 
 ```bash
 swift Art/Brand/export.swift

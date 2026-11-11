@@ -1,5 +1,5 @@
 <p align="center">
-  <img src=".github/assets/lil-agent-3d.png" alt="Lil Agent" width="149" />
+  <img src=".github/assets/new-lilagent-logo.png" alt="Lil Agent" width="149" />
 </p>
 
 <p align="center">
