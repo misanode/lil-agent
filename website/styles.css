@@ -69,7 +69,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visibl
 
 /* ---------- Hero ---------- */
 .hero { padding: 64px 0 36px; text-align: center; }
-.hero-logo { width: 190px; height: auto; margin: -18px auto 4px; animation: float 6s ease-in-out infinite; -webkit-mask-image: radial-gradient(closest-side, #000 70%, transparent 100%); mask-image: radial-gradient(closest-side, #000 70%, transparent 100%); }
+.hero-logo { width: 190px; height: auto; margin: -18px auto 4px; animation: float 6s ease-in-out infinite; }
 h1 { margin: 0 auto 22px; max-width: 860px; font: 400 clamp(42px, 6.6vw, 78px)/1.02 var(--serif); letter-spacing: -.05em; }
 h1 em { color: var(--bronze); }
 .rise .w { display: inline-block; overflow: hidden; padding-bottom: .16em; margin-bottom: -.16em; vertical-align: bottom; }
