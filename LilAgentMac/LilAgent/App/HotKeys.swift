@@ -10,6 +10,8 @@ final class HotKeys {
         (UInt32(kVK_ANSI_Backslash), UInt32(cmdKey), "⌘\\"),
     ]
 
+    
+    
     @discardableResult
     func register() -> [String] {
         stop()
