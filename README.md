@@ -3,20 +3,6 @@
 </p>
 
 <p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset=".github/assets/readme-hero-dark.svg" />
-    <img src=".github/assets/readme-hero-light.svg" alt="Lil Agent — A little desktop companion for your AI coding sessions." width="1200" />
-  </picture>
-</p>
-
-<p align="center">
-  Choose <strong>Clawd</strong> or <strong>Codex</strong> and watch your companion act out<br />
-  what your local Claude Code or Codex agent is doing.
-</p>
-
-<br />
-
-<p align="center">
   <a href="https://github.com/misanode/lil-agent/releases/latest/download/Lil-Agent-Electron-macOS-arm64.zip"><img src=".github/assets/get-for-mac.svg" alt="Get for Mac — Electron app for Apple silicon" width="240" /></a>
   &nbsp;
   <a href="https://github.com/misanode/lil-agent/releases/latest/download/Lil-Agent-Windows-Setup.exe"><img src=".github/assets/get-for-windows.svg" alt="Get for Windows — Electron app" width="288" /></a>
