@@ -1,4 +1,5 @@
 import Foundation
+import simd
 
 struct PetSettings: Codable, Equatable {
     struct Home: Codable, Equatable {
@@ -17,11 +18,14 @@ struct PetSettings: Codable, Equatable {
     var idleSleepMin = 5.0
     var openAtLogin = false
     var keepOnTop = true
+    var showInDock = true
     var showHideShortcut = true
     var showStatusText = true
     var agentReactions = true
     var musicDance = true
     var typeAlong = true
+    /// Accent colour of the type-along keycaps, as #RRGGBB.
+    var keyColor = KeyColors.defaultColor
     var home: Home?
     var character = PetCharacter.clawd.rawValue
 
@@ -37,11 +41,13 @@ struct PetSettings: Codable, Equatable {
         idleSleepMin = (try? c.decodeIfPresent(Double.self, forKey: .idleSleepMin)) ?? d.idleSleepMin
         openAtLogin = (try? c.decodeIfPresent(Bool.self, forKey: .openAtLogin)) ?? d.openAtLogin
         keepOnTop = (try? c.decodeIfPresent(Bool.self, forKey: .keepOnTop)).flatMap { $0 } ?? d.keepOnTop
+        showInDock = (try? c.decodeIfPresent(Bool.self, forKey: .showInDock)).flatMap { $0 } ?? d.showInDock
         showHideShortcut = (try? c.decodeIfPresent(Bool.self, forKey: .showHideShortcut)) ?? d.showHideShortcut
         showStatusText = (try? c.decodeIfPresent(Bool.self, forKey: .showStatusText)) ?? d.showStatusText
         agentReactions = (try? c.decodeIfPresent(Bool.self, forKey: .agentReactions)) ?? d.agentReactions
         musicDance = (try? c.decodeIfPresent(Bool.self, forKey: .musicDance)) ?? d.musicDance
         typeAlong = (try? c.decodeIfPresent(Bool.self, forKey: .typeAlong)) ?? d.typeAlong
+        keyColor = (try? c.decodeIfPresent(String.self, forKey: .keyColor)).flatMap { $0 }.flatMap(KeyColors.normalize) ?? d.keyColor
         home = (try? c.decodeIfPresent(Home.self, forKey: .home)) ?? nil
         character = (try? c.decodeIfPresent(String.self, forKey: .character)).flatMap { $0 }.flatMap(PetCharacter.init(rawValue:))?.rawValue ?? d.character
         sizes = (try? c.decodeIfPresent([String: Int].self, forKey: .sizes)).flatMap { $0 } ?? d.sizes
@@ -60,6 +66,29 @@ enum PetCharacter: String, CaseIterable {
         }
         return try GLTFAsset(data: try Data(contentsOf: url))
     }
+}
+
+enum KeyColors {
+    static let defaultColor = "#7E6345"
+    static let presets: [(name: String, hex: String)] = [
+        ("Mocha", "#7E6345"), ("Clay", "#C9603A"), ("Ocean", "#4062E0"), ("Forest", "#3F7D4E"),
+        ("Plum", "#7A4A8C"), ("Rose", "#C2556F"), ("Graphite", "#4A4A4F"),
+    ]
+
+    /// Parses #RRGGBB (or RRGGBB) into 0...1 components.
+    static func rgb(_ hex: String) -> SIMD3<Double>? {
+        var h = hex.trimmingCharacters(in: .whitespaces)
+        if h.hasPrefix("#") { h.removeFirst() }
+        guard h.count == 6, let v = UInt32(h, radix: 16) else { return nil }
+        return SIMD3(Double((v >> 16) & 0xFF), Double((v >> 8) & 0xFF), Double(v & 0xFF)) / 255
+    }
+
+    static func hex(_ c: SIMD3<Double>) -> String {
+        let v = simd_clamp((c * 255).rounded(.toNearestOrAwayFromZero), SIMD3(repeating: 0), SIMD3(repeating: 255))
+        return String(format: "#%02X%02X%02X", Int(v.x), Int(v.y), Int(v.z))
+    }
+
+    static func normalize(_ hex: String) -> String? { rgb(hex).map(Self.hex) }
 }
 
 enum PetSizes {

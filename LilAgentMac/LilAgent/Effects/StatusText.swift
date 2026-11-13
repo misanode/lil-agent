@@ -3,6 +3,18 @@ import CoreText
 import SceneKit
 
 final class StatusText {
+    struct Palette {
+        var rim: CGColor
+        var fill: CGColor
+        var shadow: CGColor
+        static let clawd = Palette(rim: CGColor(srgbRed: 201 / 255, green: 96 / 255, blue: 58 / 255, alpha: 1),
+                                   fill: CGColor(srgbRed: 1, green: 250 / 255, blue: 245 / 255, alpha: 1),
+                                   shadow: CGColor(srgbRed: 70 / 255, green: 25 / 255, blue: 10 / 255, alpha: 0.45))
+        static let codex = Palette(rim: CGColor(srgbRed: 64 / 255, green: 98 / 255, blue: 224 / 255, alpha: 1),
+                                   fill: CGColor(srgbRed: 236 / 255, green: 252 / 255, blue: 1, alpha: 1),
+                                   shadow: CGColor(srgbRed: 14 / 255, green: 20 / 255, blue: 60 / 255, alpha: 0.45))
+    }
+
     static let phrases: [String: String] = [
         "boot": "Hello there!", "idle": "Just hanging out.", "walk": "Just stretching my legs.",
         "happy": "Life is good.", "excited": "Ooh, let’s go!", "curious": "What’s that?",
@@ -103,7 +115,7 @@ final class StatusText {
 
     private func draw(_ text: String, px: Double, ratio: Double, codex: Bool) {
         let font = GlyphArt.roundedFont(size: px * ratio, weight: .bold)
-        let palette = codex ? TypedLetters.Palette.codex : .clawd
+        let palette = codex ? Palette.codex : .clawd
         func measure(_ text: String) -> CGFloat { GlyphArt.advance(GlyphArt.line(text, font: font)) }
         var lines: [String] = [], line = ""
         for word in text.split(separator: " ") {
@@ -153,11 +165,11 @@ final class StatusText {
         var textHeight = 0.50 - (pet.stateName == "command" ? 0.10 : 0)
         if pet.stateName == "permission" || pet.stateName == "error" { textHeight = 0.20 }
         let extent = max(0, Self.extent(x: pet.loco.x, facing: pet.loco.facing, scale: p.scale, halfWidth: pet.mob.edgeHalfWidth,
-                                      halfDepth: pet.mob.edgeHalfDepth, cameraDistance: pet.letters.cameraDistance) - inset)
+                                      halfDepth: pet.mob.edgeHalfDepth, cameraDistance: pet.keycaps.cameraDistance) - inset)
         let base = Self.layout(x: pet.loco.x, y: Double(pet.mob.root.simdPosition.y) + pet.mob.height * p.scale * textHeight,
                                  extent: extent, width: width, height: height, halfWidth: p.halfWidth, halfHeight: p.halfHeight, side: side)
         let layout = Self.avoidProps(base, width: width, height: height, halfWidth: p.halfWidth, halfHeight: p.halfHeight,
-                                     obstacles: pet.mob.sidePropBounds(cameraDistance: pet.letters.cameraDistance),
+                                     obstacles: pet.mob.sidePropBounds(cameraDistance: pet.keycaps.cameraDistance),
                                      attachBelow: ["command", "permission", "error"].contains(pet.stateName))
         node.isHidden = layout.scale <= 0
         node.simdPosition = SIMD3(Float(layout.x), Float(layout.y), 0)

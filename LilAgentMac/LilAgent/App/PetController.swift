@@ -283,10 +283,9 @@ final class PetController: NSObject, NSMenuDelegate, SCNSceneRendererDelegate {
         simScreenHeight = max(snap.screenHeight, 1)
         pet.settings = snap.settings
         agent.settings = snap.settings
-        pet.letters.backingScale = snap.backingScale
         pet.statusText.backingScale = snap.backingScale
         stage.resize(width: Double(snap.viewSize.width), height: Double(snap.viewSize.height))
-        pet.letters.cameraDistance = Double(stage.cameraNode.simdPosition.z)
+        pet.keycaps.cameraDistance = Double(stage.cameraNode.simdPosition.z)
 
         for job in jobs { job() }
         pollPointer(snap.windowFrame)
@@ -401,6 +400,15 @@ final class PetController: NSObject, NSMenuDelegate, SCNSceneRendererDelegate {
         if old.keepOnTop != new.keepOnTop {
             window.level = new.keepOnTop ? .floating : .normal
             keepMascotInFront()
+        }
+        if old.showInDock != new.showInDock {
+            NSApp.setActivationPolicy(new.showInDock ? .regular : .accessory)
+            if let s = settingsWindow, s.isVisible {
+                DispatchQueue.main.async {
+                    NSApp.activate(ignoringOtherApps: true)
+                    s.makeKeyAndOrderFront(nil)
+                }
+            }
         }
         if old.petSize != new.petSize { updateWindowFrame() }
         if old.typeAlong != new.typeAlong { keys.sync(new.typeAlong) }

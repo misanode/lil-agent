@@ -21,16 +21,12 @@ final class Mascot {
     private(set) var halfWidth = 0.6
     private(set) var halfDepth = 0.3
     private(set) var emoteLift = 1.1
-    private(set) var bodyHalfWidth = 0.5
-    var textHalfWidth: Double { 1.2 * min(halfWidth, bodyHalfWidth * (screenFace ? Self.codexTextWidth : Self.clawdTextWidth)) }
-    private static let clawdTextWidth = 1.03, codexTextWidth = 1.6
     private static let sidePropGroups = [
         ("prop_command_", "prop_command_window"), ("prop_error_", "prop_error_alert"),
         ("prop_permission_", "prop_permission_lock"), ("prop_planning_", "prop_planning_list"),
         ("prop_question_", "prop_question_bubble"), ("prop_thinking_", "prop_thinking_bubble"),
         ("prop_searching_", "prop_searching_glass"),
     ]
-    private(set) var bodyFront = 0.3
 
     private var actions: [String: ClipAction] = [:]
     private var weights: [String: Double] = [:]
@@ -162,17 +158,6 @@ final class Mascot {
         halfWidth = max(0.25, Double(max(size.x, size.z) * unit) / 2)
         halfDepth = Double(size.z * unit) / 2
         emoteLift = h + 0.1
-        bodyHalfWidth = halfWidth * 0.8
-        scene.enumerateHierarchy { node, stop in
-            guard node.name?.lowercased() == "body", let g = node.geometry else { return }
-            let (a, b) = g.boundingBox
-            let m = node.simdWorldTransform
-            let lo = m * SIMD4(Float(a.x), Float(a.y), Float(a.z), 1)
-            let hi = m * SIMD4(Float(b.x), Float(b.y), Float(b.z), 1)
-            self.bodyHalfWidth = Double(abs(hi.x - lo.x)) / 2
-            self.bodyFront = Double(max(hi.z, lo.z))
-            stop.pointee = true
-        }
 
         Self.restyleClay(scene)
         findEyes(scene)
@@ -1006,6 +991,25 @@ final class Mascot {
             box = (min(box.minX, b.minX), max(box.maxX, b.maxX), max(box.top, b.top))
         }
         return box
+    }
+
+    /// World-space bounds of the laptop prop while it's out, used to launch typed keycaps.
+    func laptopBounds() -> (lo: Vec3, hi: Vec3)? {
+        guard let screen, !screen.prop.isHidden else { return nil }
+        var lo = SIMD3<Float>(repeating: .greatestFiniteMagnitude)
+        var hi = SIMD3<Float>(repeating: -.greatestFiniteMagnitude)
+        screen.prop.enumerateHierarchy { node, _ in
+            guard let geometry = node.geometry, !node.isHidden else { return }
+            let (a, b) = geometry.boundingBox
+            let m = node.simdWorldTransform
+            for i in 0..<8 {
+                let w = m * SIMD4(Float(i & 1 == 0 ? a.x : b.x), Float(i & 2 == 0 ? a.y : b.y), Float(i & 4 == 0 ? a.z : b.z), 1)
+                lo = simd_min(lo, SIMD3(w.x, w.y, w.z))
+                hi = simd_max(hi, SIMD3(w.x, w.y, w.z))
+            }
+        }
+        guard lo.x <= hi.x, hi.y - lo.y > 1e-4 else { return nil }
+        return (lo.d, hi.d)
     }
 
     func letterOrigin() -> Vec3? {

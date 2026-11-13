@@ -37,16 +37,16 @@ final class Pet {
 
     let loco = Locomotion()
     let brain = Personality()
-    let letters: TypedLetters
+    let keycaps: TypedKeys
     let statusText: StatusText
     private(set) var fsm: StateMachine!
 
     init(mob: Mascot, scene: SCNScene, settings: PetSettings) {
         self.mob = mob
         self.settings = settings
-        letters = TypedLetters(scene: scene)
+        keycaps = TypedKeys(scene: scene)
+        keycaps.accentHex = settings.keyColor
         statusText = StatusText(scene: scene)
-        letters.palette = mob.hasScreenFace ? .codex : .clawd
         fsm = StateMachine(self)
         fsm.go(Transition("boot"))
     }
@@ -71,7 +71,6 @@ final class Pet {
         next.face.setExpression(old.face.expression)
         next.stateName = old.stateName
         mob = next
-        letters.palette = next.hasScreenFace ? .codex : .clawd
     }
 
     func setHome() {
@@ -85,7 +84,7 @@ final class Pet {
     }
 
     func typeChar(_ ch: String, code: Int64 = -1) {
-        letters.input(ch)
+        keycaps.input(ch)
         mob.pressKey(code)
     }
 
@@ -145,10 +144,9 @@ final class Pet {
         face.autoBlink = info.blink
         face.update(dt)
         mob.animate(dt)
-        let lineY = Double(root.simdPosition.y) + (mob.height + 0.18) * scale
-        letters.update(dt, origin: letterOrigin(), scale: scale, lineY: lineY,
-                       clipCenter: Double(root.simdPosition.x), clipHalf: mob.textHalfWidth * scale,
-                       clipDepth: Double(root.simdPosition.z) + mob.bodyFront * scale)
+        keycaps.accentHex = settings.keyColor
+        keycaps.update(dt, laptop: mob.laptopBounds(), fallback: letterOrigin(), scale: scale,
+                       bounds: (placement.halfWidth, placement.halfHeight))
         statusText.update(dt, pet: self)
     }
 
