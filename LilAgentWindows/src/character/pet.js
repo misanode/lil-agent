@@ -5,7 +5,7 @@ import { Locomotion, Personality } from './locomotion.js';
 import { Pose, POSE_KEYS } from './pose.js';
 import { StateMachine, T } from './stateMachine.js';
 import { STATES } from './states.js';
-import { TypedLetters, PALETTES } from '../effects/typedLetters.js';
+import { TypedKeys } from '../effects/typedKeys.js';
 import { StatusText } from '../effects/statusText.js';
 
 const tmp = new THREE.Vector3();
@@ -33,9 +33,9 @@ export class Pet {
     this.carryVX = null;
     this.loco = new Locomotion();
     this.brain = new Personality();
-    this.letters = new TypedLetters(scene);
+    this.keycaps = new TypedKeys(scene);
+    this.keycaps.setAccent(settings.keyColor);
     this.statusText = new StatusText(scene);
-    this.letters.palette = mob.hasScreenFace ? PALETTES.codex : PALETTES.clawd;
     this.fsm = new StateMachine(this, STATES);
     this.fsm.go(T('boot'));
   }
@@ -64,7 +64,6 @@ export class Pet {
     next.face.setExpression(old.face.expression);
     next.stateName = old.stateName;
     this.mob = next;
-    this.letters.palette = next.hasScreenFace ? PALETTES.codex : PALETTES.clawd;
     old.dispose?.();
   }
 
@@ -79,7 +78,7 @@ export class Pet {
   }
 
   typeChar(ch, code = -1) {
-    this.letters.input(ch);
+    this.keycaps.input(ch);
     this.mob.pressKey(code);
   }
 
@@ -141,10 +140,10 @@ export class Pet {
     this.face.autoBlink = info.blink;
     this.face.update(dt);
     mob.animate(dt);
-    const lineY = root.position.y + (mob.height + 0.18) * scale;
-    this.letters.update(dt, {
-      origin: this.letterOrigin(), scale, lineY,
-      clipCenter: root.position.x, clipHalf: mob.textHalfWidth * scale, clipDepth: root.position.z + mob.bodyFront * scale,
+    this.keycaps.setAccent(this.settings.keyColor);
+    this.keycaps.update(dt, {
+      laptop: mob.laptopBounds(), fallback: this.letterOrigin(), scale,
+      bounds: { x: this.placement.halfWidth, y: this.placement.halfHeight },
     });
     this.statusText.update(dt, this);
   }

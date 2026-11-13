@@ -1,6 +1,13 @@
 import * as THREE from 'three';
-import { font, PALETTES } from './typedLetters.js';
 import { STATUS_PHRASES, statusTextExtent, statusTextLayout, avoidStatusProps } from './statusTextLayout.js';
+
+export const FONT_FAMILY = '"SF Pro Rounded", ui-rounded, "Nunito", "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif';
+export const font = (px) => `700 ${px}px ${FONT_FAMILY}`;
+
+export const PALETTES = {
+  clawd: { rim: 'rgb(201, 96, 58)', fill: 'rgb(255, 250, 245)', shadow: 'rgba(70, 25, 10, 0.45)' },
+  codex: { rim: 'rgb(64, 98, 224)', fill: 'rgb(236, 252, 255)', shadow: 'rgba(14, 20, 60, 0.45)' },
+};
 
 export class StatusText {
   constructor(scene) {
@@ -81,14 +88,14 @@ export class StatusText {
     const inset = pet.mob.hasScreenFace ? 0.08 * scale : 0;
     let textHeight = 0.50 - (pet.stateName === 'command' ? 0.10 : 0);
     if (pet.stateName === 'permission' || pet.stateName === 'error') textHeight = 0.20;
-    const extent = Math.max(0, statusTextExtent(pet.loco.x, pet.loco.facing, scale, pet.mob.edgeHalfWidth, pet.mob.edgeHalfDepth, pet.letters.cameraDistance) - inset);
+    const extent = Math.max(0, statusTextExtent(pet.loco.x, pet.loco.facing, scale, pet.mob.edgeHalfWidth, pet.mob.edgeHalfDepth, pet.keycaps.cameraDistance) - inset);
     const base = statusTextLayout({
       x: pet.loco.x, y: pet.mob.root.position.y + pet.mob.height * scale * textHeight,
       extent, width: this.width, height: this.height, halfWidth, halfHeight, side: this.side,
     });
     const layout = avoidStatusProps(base, {
       width: this.width, height: this.height, halfWidth, halfHeight,
-      obstacles: pet.mob.sidePropBounds?.(pet.letters.cameraDistance) ?? [],
+      obstacles: pet.mob.sidePropBounds?.(pet.keycaps.cameraDistance) ?? [],
       attachBelow: ['command', 'permission', 'error'].includes(pet.stateName),
     });
     this.mesh.visible = layout.scale > 0;

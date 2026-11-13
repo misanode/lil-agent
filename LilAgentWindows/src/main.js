@@ -205,7 +205,7 @@ async function main() {
         centeredHome = false;
         saveHome();
       }
-      pet.letters.cameraDistance = stage.camera.position.z;
+      pet.keycaps.cameraDistance = stage.camera.position.z;
       pet.update(dt);
       stage.render();
       if (pet.stateName !== lastState) {

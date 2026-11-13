@@ -11,7 +11,6 @@ const FADE_RATE = 10;
 const TURN_NAMES = ['head', 'neck', 'trunk', 'torso', 'chest', 'spine', 'body'];
 const EYE_TRAVEL_FRACTION = 0.04;
 const EYES_NAME = /^eyes?([_.\s-]?(l|r|left|right))?$/i;
-const CLAWD_TEXT_WIDTH = 1.03, CODEX_TEXT_WIDTH = 1.6;
 const SIDE_PROP_GROUPS = [
   ['prop_command_', 'prop_command_window'], ['prop_error_', 'prop_error_alert'],
   ['prop_permission_', 'prop_permission_lock'], ['prop_planning_', 'prop_planning_list'],
@@ -79,7 +78,7 @@ export class Mascot {
     this.hips.add(this.torso);
     this.face = new FaceDisplay();
 
-    this.height = 1.1; this.halfWidth = 0.6; this.halfDepth = 0.3; this.emoteLift = 1.1; this.bodyHalfWidth = 0.5; this.bodyFront = 0.3;
+    this.height = 1.1; this.halfWidth = 0.6; this.halfDepth = 0.3; this.emoteLift = 1.1;
     this.actions = new Map();
     this.weights = {};
     this.mixer = null;
@@ -142,15 +141,7 @@ export class Mascot {
     this.halfWidth = Math.max(0.25, (Math.max(size.x, size.z) * unit) / 2);
     this.halfDepth = size.z * unit / 2;
     this.emoteLift = h + 0.1;
-    this.bodyHalfWidth = this.halfWidth * 0.8;
     this.root.updateMatrixWorld(true);
-    const bodyMesh = find(scene, (o) => lower(o) === 'body' && o.isMesh);
-    if (bodyMesh) {
-      bodyMesh.geometry.computeBoundingBox();
-      const bb = bodyMesh.geometry.boundingBox.clone().applyMatrix4(relative(bodyMesh, this.root));
-      this.bodyHalfWidth = (bb.max.x - bb.min.x) / 2;
-      this.bodyFront = bb.max.z;
-    }
 
     Mascot.matchNativeMaterials(scene);
     Mascot.restyleClay(scene);
@@ -285,7 +276,6 @@ export class Mascot {
 
   get hasScreenFace() { return this.faces.size > 0; }
   get head() { return this.torso; }
-  get textHalfWidth() { return Math.min(this.halfWidth, this.bodyHalfWidth * (this.hasScreenFace ? CODEX_TEXT_WIDTH : CLAWD_TEXT_WIDTH)) * 1.2; }
   get edgeHalfWidth() {
     return this.bed?.visible && this.bedBox
       ? Math.max(this.halfWidth, Math.abs(this.bedBox.minX), Math.abs(this.bedBox.maxX)) : this.halfWidth;
@@ -875,6 +865,21 @@ export class Mascot {
       u.uOn.value = on;
       u.reveal.value = reveal;
     }
+  }
+
+  /** World-space bounds of the laptop prop while it's out, used to launch typed keycaps. */
+  laptopBounds() {
+    if (!this.screen || !this.screen.prop.visible) return null;
+    const box = new THREE.Box3();
+    const part = new THREE.Box3();
+    this.screen.prop.updateWorldMatrix(true, true);
+    this.screen.prop.traverseVisible((o) => {
+      if (!o.isMesh) return;
+      if (!o.geometry.boundingBox) o.geometry.computeBoundingBox();
+      box.union(part.copy(o.geometry.boundingBox).applyMatrix4(o.matrixWorld));
+    });
+    if (box.isEmpty() || box.max.y - box.min.y < 1e-4) return null;
+    return { lo: box.min.toArray(), hi: box.max.toArray() };
   }
 
   letterOrigin() {
