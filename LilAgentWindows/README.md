@@ -10,7 +10,7 @@ Settings panel, per-character sizes, turning moods off, look at cursor, and Ctrl
 | `Character/States.swift`, `Pet.swift`, `Face.swift`, `Pose.swift`, `StateMachine.swift`, `Locomotion.swift` | `src/character/*.js` |
 | `Model/Mascot.swift` (and its SceneKit shaders) | `src/model/mascot.js`, `src/model/bedding.js` (GLSL) |
 | `Core/Stage.swift` | `src/core/stage.js` |
-| `Effects/TypedLetters.swift` | `src/effects/typedLetters.js` |
+| `Effects/TypedKeys.swift` | `src/effects/typedKeys.js` |
 | `Interaction/PointerDirector.swift`, `AgentDirector.swift` | `src/interaction/*.js` |
 | `App/PetController.swift` | `src/main.js` (simulation) + `electron/main.js` (app) |
 | `App/SettingsPanel.swift` | `settings.html`, `src/settings/panel.{js,css}` |
@@ -103,14 +103,14 @@ See [Electron Builder's update guide](https://www.electron.build/v26/docs/featur
 - **Icons:** [Lucide](https://lucide.dev) (ISC licence) instead of SF Symbols — Apple's SF Symbols
   licence only allows them in apps for Apple platforms.
 - **Shortcut:** Ctrl+\ (⌘\ when run on a Mac).
-- **Letters:** SF Pro Rounded isn't on Windows; they fall back to Segoe UI.
+- **Keycaps and status text:** SF Pro Rounded isn't on Windows; status text and keys without their own art (digits) fall back to Segoe UI.
 
 ## Check on a Windows PC (couldn't be tested from a Mac)
 
 - **Claude Code / Codex hooks.** They're the same bash commands as on the Mac (`curl … || true`). Claude Code runs
   hooks through Git Bash on Windows, so they should work; confirm Codex does too.
 - **Typing along** uses a global keyboard hook (`uiohook-napi`) with a US layout on both platforms, without an app-level password-field filter.
-  On Windows, the letters above the pet can show what's typed into password fields. Disable typing reactions for sensitive input on either platform.
+  On Windows, the keycaps popping out of the laptop can show what's typed into password fields. Disable typing reactions for sensitive input on either platform.
 - **Dance to music** reads Windows' media sessions (Spotify, Apple Music, iTunes) through a small PowerShell helper.
 - The tray icon (white or black to match the taskbar theme), the splash at different display scales, the installer and
   Start-menu icons, Ctrl+\, open at login, and the window staying on top.

@@ -90,7 +90,7 @@ leaves logs beside the installer; a DMG existing on disk alone does not mean it 
 | `LilAgent/Core` | Stage (camera, lights, shadow, environment), screen-space maths, settings, helpers |
 | `LilAgent/Model` | Minimal glTF (.glb) loader, animation mixer, the mascot's body (port of `CustomMob.js`) |
 | `LilAgent/Character` | Pose, face, locomotion, personality, state machine and every state (port of `states.js`) |
-| `LilAgent/Effects` | Typed letters and emotes |
+| `LilAgent/Effects` | Type-along keycaps, status text and emotes |
 | `LilAgent/Interaction` | Pointer (pet, carry, throw, resize) and Claude Code / music / typing director |
 | `LilAgent/System` | Claude Code hook listener and installer, keyboard and music watchers |
 
@@ -116,17 +116,21 @@ build the packages, and publish a GitHub release tagged `v` plus that version (f
 ## Branding
 
 The logo, splash, app icon and menu-bar artwork live in `Art/Brand`: the supplied originals in `Art/Brand/Source`
-(including `lil-agent-3d.png`, the rendered 3D badge the splash shows, and `app-icon.png`, the app icon master for both
-apps), and the named layers derived from them (`splash-card.svg`, `splash-logo.svg`, `splash-wordmark.svg`, and
-`menu-bar-mascot.svg` without the sparkles). After editing them, run
+(including `lil-agent-glass.png`, the glass logo the splash shows, `splash-bg.svg`, the patterned splash card, and
+`app-icon.png`, the Windows icon master), and the named layers derived from them (`splash-card.svg`,
+`splash-wordmark.svg`, and `menu-bar-mascot.svg` without the sparkles). The splash card is 1000×598.
+
+The Mac app icon is `LilAgent/AppIcon.icon`, an Icon Composer file: the `#312C2D` background plus the robot as one glass
+layer. macOS 26 renders it as Liquid Glass with its edge highlight and dark, clear and tinted versions; Xcode builds a
+flat fallback for earlier macOS. Open it in Icon Composer to adjust the glass. After editing any of this, run
 
 ```bash
 swift Art/Brand/export.swift
 ```
 
 It checks the layers against the originals, then writes the splash layers and menu-bar template into `LilAgent/Resources`,
-the `AppIcon` set, and the Electron app's `icon.icns`, `icon.ico` and Windows tray icons. `bash Checks/startup.sh`
-checks the splash and startup coordination.
+compiles `AppIcon.icon` into the Electron app's `icon.icns`, and writes `icon.ico` and the Windows tray icons.
+`bash Checks/startup.sh` checks the splash and startup coordination.
 
 ## Codex reactions
 
