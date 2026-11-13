@@ -2,8 +2,8 @@ import AppKit
 import QuartzCore
 
 final class SplashWindow: NSPanel {
-    static let cardWidth: CGFloat = 340
-    static let cardAspect: CGFloat = 777.0 / 1000.0
+    static let cardWidth: CGFloat = 400
+    static let cardAspect: CGFloat = 598.0 / 1000.0
     static let spinnerGap: CGFloat = 18
     static let spinnerSize: CGFloat = 20
     static let edge: CGFloat = 2

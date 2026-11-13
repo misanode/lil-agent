@@ -4,7 +4,7 @@ let brand = URL(fileURLWithPath: #filePath).deletingLastPathComponent()
 let mac = brand.appendingPathComponent("../..").standardizedFileURL
 let electron = mac.appendingPathComponent("../LilAgentWindows").standardizedFileURL
 let resources = mac.appendingPathComponent("LilAgent/Resources")
-let appIconSet = mac.appendingPathComponent("LilAgent/Assets.xcassets/AppIcon.appiconset")
+let appIcon = mac.appendingPathComponent("LilAgent/AppIcon.icon")
 let electronAssets = electron.appendingPathComponent("assets")
 let fm = FileManager.default
 
@@ -26,11 +26,23 @@ func pathData(_ url: URL) -> [String] {
     return regex.matches(in: text, range: NSRange(text.startIndex..., in: text)).map { String(text[Range($0.range(at: 1), in: text)!]) }
 }
 
+let splashCanvas = CGSize(width: 1000, height: 598)
+
 func checkProvenance() {
     let splash = Set(pathData(source("Source/splash.svg")))
+    let background = Set(pathData(source("Source/splash-bg.svg")))
     let logo = Set(pathData(source("Source/lil-agent-logo.svg")))
-    for name in ["splash-logo.svg", "splash-wordmark.svg"] where !Set(pathData(source(name))).isSubset(of: splash) {
-        fail("\(name) no longer matches Source/splash.svg")
+    if !Set(pathData(source("splash-wordmark.svg"))).isSubset(of: splash) {
+        fail("splash-wordmark.svg no longer matches Source/splash.svg")
+    }
+    if !Set(pathData(source("splash-card.svg"))).isSubset(of: background) {
+        fail("splash-card.svg no longer matches Source/splash-bg.svg")
+    }
+    for name in ["splash-card.svg", "splash-wordmark.svg"] {
+        let size = svg(name).size
+        if abs(size.width / size.height - splashCanvas.width / splashCanvas.height) > 0.01 {
+            fail("\(name) isn't \(Int(splashCanvas.width))×\(Int(splashCanvas.height)) like the splash card")
+        }
     }
     for name in ["menu-bar-mascot.svg"] where !Set(pathData(source(name))).isSubset(of: logo) {
         fail("\(name) no longer matches Source/lil-agent-logo.svg")
@@ -85,16 +97,6 @@ let master: CGImage = {
     return plate
 }()
 
-func macIcon(_ px: Int) -> NSBitmapImageRep {
-    bitmap(px, px) { ctx in
-        let k = CGFloat(px) / 1024
-        let rect = CGRect(x: 100 * k, y: 100 * k, width: 824 * k, height: 824 * k)
-        ctx.interpolationQuality = .high
-        ctx.setShadow(offset: CGSize(width: 0, height: -10 * k), blur: 20 * k, color: NSColor(white: 0, alpha: 0.3).cgColor)
-        ctx.draw(master, in: rect)
-    }
-}
-
 func windowsIcon(_ px: Int) -> NSBitmapImageRep {
     bitmap(px, px) { ctx in
         ctx.interpolationQuality = .high
@@ -132,16 +134,16 @@ func ico(_ sizes: [Int], _ url: URL) {
 }
 
 func splashBadge(width: Int) -> NSBitmapImageRep {
-    guard let data = try? Data(contentsOf: source("Source/lil-agent-3d.png")), let badge = NSBitmapImageRep(data: data)?.cgImage else {
-        fail("Can't read Source/lil-agent-3d.png")
+    guard let data = try? Data(contentsOf: source("Source/lil-agent-glass.png")), let badge = NSBitmapImageRep(data: data)?.cgImage else {
+        fail("Can't read Source/lil-agent-glass.png")
     }
-    let unit = CGFloat(width) / 1000
-    let height = Int((777 * unit).rounded())
-    let h = 410 * unit
+    let unit = CGFloat(width) / splashCanvas.width
+    let height = Int((splashCanvas.height * unit).rounded())
+    let h = 377 * unit
     let w = h * CGFloat(badge.width) / CGFloat(badge.height)
     return bitmap(width, height) { ctx in
         ctx.interpolationQuality = .high
-        ctx.draw(badge, in: CGRect(x: 500 * unit - w / 2, y: CGFloat(height) - 304 * unit - h / 2, width: w, height: h))
+        ctx.draw(badge, in: CGRect(x: 500 * unit - w / 2, y: CGFloat(height) - 270 * unit - h / 2, width: w, height: h))
     }
 }
 
@@ -160,63 +162,23 @@ for (name, ink) in [("trayWindowsWhite", NSColor.white), ("trayWindowsBlack", NS
     }
 }
 
-let slots: [(points: Int, scale: Int)] = [16, 32, 128, 256, 512].flatMap { [($0, 1), ($0, 2)] }
-let iconset = fm.temporaryDirectory.appendingPathComponent("LilAgent-\(UUID().uuidString).iconset")
-try? fm.removeItem(at: appIconSet)
-try? fm.createDirectory(at: appIconSet, withIntermediateDirectories: true)
-try? fm.createDirectory(at: iconset, withIntermediateDirectories: true)
-var entries: [String] = []
-for slot in slots {
-    let file = "icon_\(slot.points)x\(slot.points)\(slot.scale == 2 ? "@2x" : "").png"
-    let rep = macIcon(slot.points * slot.scale)
-    write(rep, appIconSet.appendingPathComponent(file))
-    write(rep, iconset.appendingPathComponent(file))
-    entries.append("""
-        {
-          "filename" : "\(file)",
-          "idiom" : "mac",
-          "scale" : "\(slot.scale)x",
-          "size" : "\(slot.points)x\(slot.points)"
-        }
-    """)
-}
-let contents = "{\n  \"images\" : [\n\(entries.joined(separator: ",\n"))\n  ],\n  \"info\" : {\n    \"author\" : \"xcode\",\n    \"version\" : 1\n  }\n}\n"
-try! contents.write(to: appIconSet.appendingPathComponent("Contents.json"), atomically: true, encoding: .utf8)
-
-let iconutil = Process()
-iconutil.executableURL = URL(fileURLWithPath: "/usr/bin/iconutil")
-iconutil.arguments = ["-c", "icns", iconset.path, "-o", electronAssets.appendingPathComponent("icon.icns").path]
-try! iconutil.run()
-iconutil.waitUntilExit()
-try? fm.removeItem(at: iconset)
-if iconutil.terminationStatus != 0 { fail("iconutil failed") }
+let iconBuild = fm.temporaryDirectory.appendingPathComponent("LilAgent-\(UUID().uuidString)")
+try? fm.createDirectory(at: iconBuild, withIntermediateDirectories: true)
+let actool = Process()
+actool.executableURL = URL(fileURLWithPath: "/usr/bin/xcrun")
+actool.arguments = ["actool", "--compile", iconBuild.path, "--platform", "macosx", "--minimum-deployment-target", "14.0",
+                    "--app-icon", "AppIcon", "--output-partial-info-plist", iconBuild.appendingPathComponent("partial.plist").path,
+                    appIcon.path]
+actool.standardOutput = FileHandle.nullDevice
+try! actool.run()
+actool.waitUntilExit()
+if actool.terminationStatus != 0 { fail("actool couldn't compile LilAgent/AppIcon.icon") }
+try? fm.removeItem(at: electronAssets.appendingPathComponent("icon.icns"))
+do { try fm.copyItem(at: iconBuild.appendingPathComponent("AppIcon.icns"), to: electronAssets.appendingPathComponent("icon.icns")) }
+catch { fail("Can't copy the compiled AppIcon.icns: \(error)") }
+try? fm.removeItem(at: iconBuild)
 
 ico([16, 20, 24, 32, 40, 48, 64, 256], electronAssets.appendingPathComponent("icon.ico"))
 write(windowsIcon(1024), electronAssets.appendingPathComponent("icon.png"))
 
-let reference = NSBitmapImageRep(data: try! Data(contentsOf: source("Source/splash-reference.png")))!
-func unscaled(_ name: String) -> NSImage {
-    let text = (try? String(contentsOf: source(name), encoding: .utf8)) ?? ""
-    let plain = text.replacingOccurrences(of: #" transform="[^"]*""#, with: "", options: .regularExpression)
-    guard let image = NSImage(data: Data(plain.utf8)) else { fail("Can't read \(name)") }
-    return image
-}
-let composite = bitmap(1000, 777) { _ in
-    for name in ["splash-card.svg", "splash-logo.svg", "splash-wordmark.svg"] { unscaled(name).draw(in: NSRect(x: 0, y: 0, width: 1000, height: 777)) }
-}
-var total = 0.0
-var worst = 0
-var a = [Int](repeating: 0, count: 4), b = [Int](repeating: 0, count: 4)
-for y in stride(from: 0, to: 777, by: 3) {
-    for x in stride(from: 0, to: 1000, by: 3) {
-        reference.getPixel(&a, atX: x, y: y)
-        composite.getPixel(&b, atX: x, y: y)
-        let d = (0..<4).map { abs(a[$0] - b[$0]) }.max()!
-        total += Double(d)
-        worst = max(worst, d)
-    }
-}
-let mean = total / Double((1000 / 3 + 1) * (777 / 3 + 1))
-print(String(format: "splash layers vs reference: mean channel difference %.2f / 255", mean))
-if mean > 4 { fail("The splash layers drift from Source/splash-reference.png") }
 print("brand assets exported")

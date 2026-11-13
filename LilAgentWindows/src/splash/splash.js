@@ -37,7 +37,7 @@ async function enter() {
   fade(card, 0, 160);
   fade(logo, 0, LOGO_REVEAL);
   fade(spinner, 0, 200);
-  const lift = innerWidth * (Number(params.get('lift')) || 18 / 340);
+  const lift = innerWidth * (Number(params.get('lift')) || 18 / 400);
   await Promise.all([
     fade(wordmark, LOGO_REVEAL, WORDMARK_FADE),
     wordmark.animate([{ transform: `translateY(${lift}px)` }, { transform: 'translateY(0)' }],

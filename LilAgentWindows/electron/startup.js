@@ -1,4 +1,4 @@
-export const SPLASH = { cardWidth: 340, aspect: 777 / 1000, gap: 18, spinner: 20, edge: 2, fadeOutMs: 180, enterLimitMs: 4000 };
+export const SPLASH = { cardWidth: 400, aspect: 598 / 1000, gap: 18, spinner: 20, edge: 2, fadeOutMs: 180, enterLimitMs: 4000 };
 
 export function splashBounds(workArea) {
   const extra = SPLASH.gap + SPLASH.spinner + SPLASH.edge;
