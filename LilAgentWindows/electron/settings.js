@@ -6,6 +6,8 @@ export const CHARACTERS = { clawd: 'Clawd', codex: 'Codex' };
 export const SIZE_PRESETS = [['Tiny', 110], ['Small', 150], ['Medium', 210], ['Large', 290], ['Huge', 400]];
 export const SIZE_RANGE = [80, 520];
 export const DEFAULT_SIZE = 290;
+export const DEFAULT_KEY_COLOR = '#7E6345';
+const normalizeHex = (v) => (typeof v === 'string' && /^#?[0-9a-f]{6}$/i.test(v.trim()) ? `#${v.trim().replace('#', '').toUpperCase()}` : null);
 
 export function clampSize(px) {
   const v = Number.isFinite(px) ? px : DEFAULT_SIZE;
@@ -22,11 +24,13 @@ export const DEFAULTS = {
   idleSleepMin: 5,
   openAtLogin: false,
   keepOnTop: true,
+  showInDock: true,
   showHideShortcut: true,
   showStatusText: true,
   agentReactions: true,
   musicDance: true,
   typeAlong: true,
+  keyColor: DEFAULT_KEY_COLOR,
   home: null,
   character: 'clawd',
 };
@@ -41,6 +45,7 @@ function sanitize(raw) {
     if (k === 'home') s.home = v && Number.isFinite(v.x) && Number.isFinite(v.lift) ? { x: v.x, lift: v.lift } : null;
     else if (k === 'sizes') s.sizes = v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).filter(([, n]) => Number.isFinite(n))) : {};
     else if (k === 'disabled') s.disabled = Array.isArray(v) ? v.filter((x) => typeof x === 'string') : [];
+    else if (k === 'keyColor') s.keyColor = normalizeHex(v) ?? DEFAULT_KEY_COLOR;
     else if (k === 'character') s.character = CHARACTERS[v] ? v : DEFAULTS.character;
     else if (typeof v === typeof def) s[k] = v;
   }

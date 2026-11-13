@@ -29,6 +29,10 @@ const IDLE_CHOICES = [['Never', 0], ['After 30 s', 0.5], ['After 5 min', 5], ['A
 const SIZE_PRESETS = [['Tiny', 110], ['Small', 150], ['Medium', 210], ['Large', 290], ['Huge', 400]];
 const SIZE_RANGE = [80, 520];
 const CHARACTERS = [['clawd', 'Clawd'], ['codex', 'Codex']];
+const KEY_COLORS = [
+  ['Mocha', '#7E6345'], ['Clay', '#C9603A'], ['Ocean', '#4062E0'], ['Forest', '#3F7D4E'],
+  ['Plum', '#7A4A8C'], ['Rose', '#C2556F'], ['Graphite', '#4A4A4F'],
+];
 
 
 function h(tag, props = {}, ...children) {
@@ -98,6 +102,8 @@ function general() {
     gap(16), row('rotate-ccw', 'Reset Position', outline('Reset', () => api.resetPosition(), { title: 'Reset the mascot’s position' })),
     gap(21), row('pin', 'Keep on top of all windows', toggle('Keep on top of all windows', s.keepOnTop, (on) => change({ keepOnTop: on }))),
     gap(16), row('eye', 'Show mascot text', toggle('Show mascot text', s.showStatusText, (on) => change({ showStatusText: on }))),
+    state.platform === 'darwin' ? gap(16) : null,
+    state.platform === 'darwin' ? row('dock', 'Show in Dock', toggle('Show in Dock', s.showInDock, (on) => change({ showInDock: on }))) : null,
     gap(23.5), header('Startup'),
     gap(16.5), row(s.openAtLogin ? 'power' : 'power-off', `${state.appName} will automatically open at login`,
       toggle('Open at login', s.openAtLogin, (on) => change({ openAtLogin: on }))),
@@ -166,12 +172,25 @@ function agents() {
     note(state.agentStatus), space(22),
     header('Behavior'), space(14),
     row('sparkles', 'Reacts to Claude Code and Codex', toggle('React to Claude Code and Codex', s.agentReactions, (on) => change({ agentReactions: on }))), space(12),
-    row('keyboard', 'Types along with your keyboard', toggle('Type along', s.typeAlong, (on) => change({ typeAlong: on }))), space(8),
+    row('keyboard', 'Types along with your keyboard', toggle('Type along', s.typeAlong, (on) => change({ typeAlong: on }))), space(12),
+    h('div', { class: `row${s.typeAlong ? '' : ' dimmed'}` }, icon('palette'), label('Key color'), h('div', { class: 'spacer' }), keyColors(s.keyColor)), space(8),
     state.typingNote ? h('div', { class: 'row' }, note(state.typingNote, true), h('div', { class: 'spacer' }),
       state.platform === 'darwin' ? outline('Open Settings', () => api.permissions(), { width: 80 }) : null) : null,
     space(14), header('Reactions'), space(6),
     note('What he acts out while an agent works. Turn any off and he ignores it.'), space(12),
     REACTIONS.map((r) => activity(r)));
+}
+
+function keyColors(current) {
+  const swatches = KEY_COLORS.map(([name, hex]) => h('button', {
+    class: `swatch${current === hex ? ' selected' : ''}`, style: { background: hex }, title: name,
+    'aria-label': `${name} keys`, 'aria-pressed': String(current === hex), onClick: () => change({ keyColor: hex }),
+  }));
+  const custom = h('input', {
+    type: 'color', class: 'swatch-custom', value: current.toLowerCase(), title: 'Custom color', 'aria-label': 'Custom key color',
+    onChange: (e) => change({ keyColor: e.target.value.toUpperCase() }),
+  });
+  return h('div', { class: 'swatches' }, swatches, custom);
 }
 
 function keybinds() {

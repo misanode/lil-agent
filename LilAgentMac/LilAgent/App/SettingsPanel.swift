@@ -256,6 +256,10 @@ struct SettingsView: View {
                 toggle("Show mascot text", model.binding(\.showStatusText))
             }
             .gap(16)
+            row(.symbol("dock.rectangle"), "Show in Dock") {
+                toggle("Show in Dock", model.binding(\.showInDock))
+            }
+            .gap(16)
             header("Startup").gap(23.5)
             row(.asset(model.values.openAtLogin ? "general-startup-on" : "general-startup-off"),
                 "\(Brand.name) will automatically open at login", spacing: 4) {
@@ -430,7 +434,10 @@ struct SettingsView: View {
             row(.symbol("keyboard"), "Types along with your keyboard", spacing: 7) {
                 toggle("Type along", model.binding(\.typeAlong))
             }
-            .padding(.bottom, 8)
+            .padding(.bottom, 12)
+            row(.symbol("paintpalette"), "Key color", spacing: 7) { keyColors }
+                .opacity(model.values.typeAlong ? 1 : 0.45)
+                .padding(.bottom, 8)
             if let why = model.typingNote {
                 HStack(spacing: 8) {
                     note(why, error: true)
@@ -443,6 +450,33 @@ struct SettingsView: View {
             header("Reactions").padding(.top, 14).padding(.bottom, 6)
             note("What he acts out while an agent works. Turn any off and he ignores it.").padding(.bottom, 12)
             ForEach(Activity.reactions) { activity($0).padding(.bottom, 10) }
+        }
+    }
+
+    private var keyColors: some View {
+        let current = model.values.keyColor
+        return HStack(spacing: 5) {
+            ForEach(KeyColors.presets, id: \.hex) { preset in
+                Button { model.change { $0.keyColor = preset.hex } } label: {
+                    Circle().fill(Color(hex: preset.hex))
+                        .frame(width: 13, height: 13)
+                        .overlay(Circle().strokeBorder(.white.opacity(current == preset.hex ? 1 : 0.18), lineWidth: current == preset.hex ? 1.5 : 0.5)
+                            .padding(-2.5))
+                        .padding(2.5)
+                        .contentShape(Circle())
+                }
+                .buttonStyle(.plain)
+                .help(preset.name)
+                .accessibilityLabel("\(preset.name) keys")
+                .accessibilityAddTraits(current == preset.hex ? [.isSelected] : [])
+            }
+            ColorPicker("Custom key color", selection: Binding(get: { Color(hex: current) }, set: { color in
+                guard let c = NSColor(color).usingColorSpace(.sRGB) else { return }
+                model.change { $0.keyColor = KeyColors.hex(SIMD3(Double(c.redComponent), Double(c.greenComponent), Double(c.blueComponent))) }
+            }), supportsOpacity: false)
+            .labelsHidden()
+            .controlSize(.mini)
+            .padding(.leading, 3)
         }
     }
 
@@ -682,5 +716,12 @@ private struct SwitchStyle: ToggleStyle {
         }
         .buttonStyle(.plain)
         .accessibilityRepresentation { Toggle(isOn: configuration.$isOn) { configuration.label } }
+    }
+}
+
+private extension Color {
+    init(hex: String) {
+        let c = KeyColors.rgb(hex) ?? KeyColors.rgb(KeyColors.defaultColor)!
+        self.init(.sRGB, red: c.x, green: c.y, blue: c.z)
     }
 }
