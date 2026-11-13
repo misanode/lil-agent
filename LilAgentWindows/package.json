@@ -13,6 +13,7 @@
     "build": "npm run assets && vite build",
     "test:animation": "node --test Checks/animation.test.mjs",
     "test:status-text": "node --test Checks/statusText.test.mjs",
+    "test:typed-keys": "node --test Checks/typedKeys.test.mjs",
     "test:startup": "node --test Checks/startup.test.mjs",
     "test:settings": "node --test Checks/panelPresentation.test.mjs",
     "test:updates": "node --test Checks/updates.test.mjs Checks/automaticUpdates.test.mjs Checks/nsisUpdates.test.mjs",

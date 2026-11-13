@@ -49,7 +49,7 @@ test('text lasts through the animation, refreshes on state changes, and respects
   const pet = {
     settings: { showStatusText: true }, stateName: 'dance',
     placement: { scale: 1.68, halfWidth: 7.2, halfHeight: 3 },
-    loco: { x: 0, facing: 0.4 }, letters: { cameraDistance: 10 },
+    loco: { x: 0, facing: 0.4 }, keycaps: { cameraDistance: 10 },
     mob: { root: new THREE.Object3D(), height: 1.1, edgeHalfWidth: 0.6, edgeHalfDepth: 0.4, hasScreenFace: true },
   };
   text.update(0.2, pet);
