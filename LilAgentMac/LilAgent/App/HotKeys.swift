@@ -11,7 +11,7 @@ final class HotKeys {
     ]
 
     
-    
+        
     @discardableResult
     func register() -> [String] {
         stop()

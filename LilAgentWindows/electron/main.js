@@ -81,6 +81,7 @@ let cursorTimer = null;
 let splash = null;
 let startup = null;
 let startupTimer = null;
+let startupFinished = false;
 const automaticUpdates = process.platform === 'win32' && app.isPackaged && !testing && !process.env.LILAGENT_UPDATE_REPO;
 const onUpdateChange = () => {
   buildTray();
@@ -172,10 +173,41 @@ function settingsChanged(old, next) {
     applyLevel();
     keepMascotInFront();
   }
+  if (old.showInDock !== next.showInDock) {
+    syncDock();
+    if (settingsWin?.isVisible()) setTimeout(() => { settingsWin?.show(); settingsWin?.focus(); }, 0);
+  }
   if (old.openAtLogin !== next.openAtLogin && app.isPackaged) app.setLoginItemSettings({ openAtLogin: next.openAtLogin });
   buildTray();
 }
 store.onChange = settingsChanged;
+
+function syncDock() {
+  if (!app.dock) return;
+  if (store.values.showInDock) app.dock.show();
+  else app.dock.hide();
+}
+
+function setAppMenu() {
+  if (process.platform !== 'darwin') return;
+  Menu.setApplicationMenu(Menu.buildFromTemplate([
+    {
+      label: APP_NAME,
+      submenu: [
+        { role: 'about' },
+        { type: 'separator' },
+        { label: 'Settings…', accelerator: 'Command+,', click: () => showSettingsBesideMascot() },
+        { type: 'separator' },
+        { role: 'hide' },
+        { role: 'hideOthers' },
+        { role: 'unhide' },
+        { type: 'separator' },
+        { role: 'quit' },
+      ],
+    },
+    { role: 'editMenu' },
+  ]));
+}
 
 function syncShowHideShortcut() {
   globalShortcut.unregister(SHORTCUT);
@@ -523,6 +555,7 @@ function beginStartup() {
 
 function finishStartup() {
   clearTimeout(startupTimer);
+  startupFinished = true;
   splash?.dismiss();
   if (!win || hidden) return;
   win.showInactive();
@@ -573,7 +606,8 @@ function startTestHooks() {
 
 app.whenReady().then(() => {
   if (!primary) return;
-  app.dock?.hide();
+  setAppMenu();
+  syncDock();
   beginStartup();
   createWindow();
   agent = startAgentBridge({
@@ -609,6 +643,9 @@ app.whenReady().then(() => {
 });
 
 app.on('window-all-closed', () => {});
+app.on('activate', () => {
+  if (startupFinished) showSettingsBesideMascot();
+});
 app.on('before-quit', () => {
   startup?.cancel();
   clearTimeout(startupTimer);
